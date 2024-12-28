@@ -49,14 +49,11 @@ export default {
                     case '/panel/password':
                         return await resetPassword(request, env);
 
-                    case '/my-ip':
-                        return await getMyIP(request);
-
                     case '/secrets':
                         return await renderSecretsPage();
 
                     default:
-                        return await fallback(request);
+                        return await getMyIP(request);
                 }
             } else {
                 return globalThis.pathName.startsWith('/tr')
