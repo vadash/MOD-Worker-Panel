@@ -181,7 +181,6 @@ async function handleTCPOutBound(
     log
 ) {
     async function connectAndWrite(address, port) {
-        if (/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?).){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(address)) address = `${atob('d3d3Lg==')}${address}${atob('LnNzbGlwLmlv')}`;
         /** @type {import("@cloudflare/workers-types").Socket} */
         const tcpSocket = connect({
             hostname: address,
