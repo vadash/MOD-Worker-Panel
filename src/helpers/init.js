@@ -15,9 +15,7 @@ export function initializeParams(request, env) {
     globalThis.client = searchParams.get('app');
     globalThis.urlOrigin = url.origin;
     globalThis.dohURL = env.DOH_URL || 'https://cloudflare-dns.com/dns-query';
-    if (pathName !== '/secrets') {
-        if (!globalThis.userID || !globalThis.trojanPassword) throw new Error(`Please set UUID and Trojan password first. Please visit <a href="https://${hostName}/secrets" target="_blank">here</a> to generate them.`, { cause: "init" });
-        if (globalThis.userID && !isValidUUID(globalThis.userID)) throw new Error(`Invalid UUID: ${globalThis.userID}`, { cause: "init" });
-        if (typeof env[env.DATABASE] !== 'object') throw new Error('KV Dataset is not properly set! Please refer to tutorials.', { cause: "init" });
-    }
+    if (!globalThis.userID || !globalThis.trojanPassword) throw new Error(`Please set ID and PASS first.`, { cause: "init" });
+    if (globalThis.userID && !isValidUUID(globalThis.userID)) throw new Error(`Invalid ID: ${globalThis.userID}`, { cause: "init" });
+    if (typeof env[env.DATABASE] !== 'object') throw new Error('KV Dataset is not properly set! Please refer to tutorials.', { cause: "init" });
 }
