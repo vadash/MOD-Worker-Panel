@@ -1,11 +1,11 @@
-export async function renderHomePage (proxySettings, isPassSet) {
+export async function renderHomePage(proxySettings, isPassSet) {
     const {
-        remoteDNS, 
+        remoteDNS,
         localDNS,
-        vlessTrojanFakeDNS, 
-        proxyIP, 
+        vlessTrojanFakeDNS,
+        proxyIP,
         outProxy,
-        cleanIPs, 
+        cleanIPs,
         enableIPv6,
         customCdnAddrs,
         customCdnHost,
@@ -14,11 +14,11 @@ export async function renderHomePage (proxySettings, isPassSet) {
         vlessConfigs,
         trojanConfigs,
         ports,
-        lengthMin, 
-        lengthMax, 
-        intervalMin, 
+        lengthMin,
+        lengthMax,
+        intervalMin,
         intervalMax,
-        fragmentPackets, 
+        fragmentPackets,
         warpEndpoints,
         warpFakeDNS,
         warpEnableIPv6,
@@ -36,7 +36,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
         bypassIran,
         bypassChina,
         bypassRussia,
-        blockAds, 
+        blockAds,
         blockPorn,
         blockUDP443,
         customBypassRules,
@@ -64,7 +64,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
             <span class="material-symbols-outlined symbol">verified</span>
             <span>${app}</span>
         </div>`).join('');
-        
+
     const subQR = (path, app, tag, title, sbType) => {
         const url = `${sbType ? 'sing-box://import-remote-profile?url=' : ''}https://${globalThis.hostName}/${path}/${globalThis.userID}${app ? `?app=${app}` : ''}#${tag}`;
         return `
@@ -72,7 +72,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
                 QR Code&nbsp;<span class="material-symbols-outlined">qr_code</span>
             </button>`;
     };
-    
+
     const subURL = (path, app, tag) => {
         const url = `https://${globalThis.hostName}/${path}/${globalThis.userID}${app ? `?app=${app}` : ''}#${tag}`;
         return `
@@ -97,7 +97,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
                 --color: black;
                 --primary-color: #09639f;
                 --secondary-color: #3498db;
-                --header-color: #09639f; 
+                --header-color: #09639f;
                 --background-color: #fff;
                 --form-background-color: #f9f9f9;
                 --table-active-color: #f2f2f2;
@@ -113,7 +113,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
                 --color: white;
                 --primary-color: #09639F;
                 --secondary-color: #3498DB;
-                --header-color: #3498DB; 
+                --header-color: #3498DB;
                 --background-color: #121212;
                 --form-background-color: #121212;
                 --table-active-color: #252525;
@@ -192,7 +192,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
                 background-color: var(--input-background-color);
                 box-sizing: border-box;
                 transition: border-color 0.3s ease;
-            }	
+            }
             input[type="text"]:focus,
             input[type="number"]:focus,
             input[type="url"]:focus,
@@ -218,9 +218,9 @@ export async function renderHomePage (proxySettings, isPassSet) {
                 box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
                 transition: all 0.3s ease;
             }
-            input[type="checkbox"] { 
+            input[type="checkbox"] {
                 background-color: var(--input-background-color);
-                style="margin: 0; 
+                style="margin: 0;
                 grid-column: 2;"
             }
             table button { margin: auto; width: auto; }
@@ -254,11 +254,11 @@ export async function renderHomePage (proxySettings, isPassSet) {
                 margin-bottom: 100px;
             }
             .table-container { margin-top: 20px; overflow-x: auto; }
-            table { 
+            table {
                 width: 100%;
                 border: 1px solid var(--border-color);
                 border-collapse: separate;
-                border-spacing: 0; 
+                border-spacing: 0;
                 border-radius: 10px;
                 margin-bottom: 20px;
                 overflow: hidden;
@@ -266,7 +266,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
             th, td { padding: 10px; border-bottom: 1px solid var(--border-color); }
             td div { display: flex; align-items: center; }
             th { background-color: var(--secondary-color); color: white; font-weight: bold; font-size: 1.1rem; width: 50%;}
-            td:last-child { background-color: var(--table-active-color); }               
+            td:last-child { background-color: var(--table-active-color); }
             tr:hover { background-color: var(--table-active-color); }
             .modal {
                 display: none;
@@ -315,7 +315,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
                 margin-bottom: 15px;
                 transition: border-color 0.3s ease;
             }
-            .routing { 
+            .routing {
                 display: grid;
                 justify-content: flex-start;
                 grid-template-columns: 1fr 1fr 10fr 1fr;
@@ -371,7 +371,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
             .header-container { display: flex; align-items: center; justify-content: center; }
             @media only screen and (min-width: 768px) {
                 .form-container { max-width: 70%; }
-                .form-control { 
+                .form-control {
                     margin-bottom: 15px;
                     display: grid;
                     grid-template-columns: 1fr 1fr;
@@ -445,7 +445,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
                         <input type="text" id="customCdnAddrs" name="customCdnAddrs" value="${customCdnAddrs.replaceAll(",", " , ")}">
                     </div>
                     <div class="form-control">
-                        <label for="customCdnHost">💀 Custom CDN Host</label> 
+                        <label for="customCdnHost">💀 Custom CDN Host</label>
                         <input type="text" id="customCdnHost" name="customCdnHost" value="${customCdnHost}">
                     </div>
                     <div class="form-control">
@@ -479,19 +479,19 @@ export async function renderHomePage (proxySettings, isPassSet) {
                                 <td style="text-align: center; font-size: larger;"><b>TLS</b></td>
                                 <td>
                                     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;">${httpsPortsBlock}</div>
-                                </td>    
+                                </td>
                             </tr>
                             ${!httpPortsBlock ? '' : `<tr>
                                 <td style="text-align: center; font-size: larger;"><b>Non TLS</b></td>
                                 <td>
                                     <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr;">${httpPortsBlock}</div>
-                                </td>    
-                            </tr>`}        
+                                </td>
+                            </tr>`}
                         </table>
                     </div>
                 </details>
                 <details>
-                    <summary><h2>FRAGMENT ⚙️</h2></summary>	
+                    <summary><h2>FRAGMENT ⚙️</h2></summary>
                     <div class="form-control">
                         <label for="fragmentLengthMin">📐 Length</label>
                         <div class="min-max">
@@ -555,8 +555,8 @@ export async function renderHomePage (proxySettings, isPassSet) {
                     </div>
                     <div class="form-control">
                         <label for="warpPlusLicense">➕ Warp+ License</label>
-                        <input type="text" id="warpPlusLicense" name="warpPlusLicense" value="${warpPlusLicense}" 
-                            pattern="^[a-zA-Z0-9]{8}-[a-zA-Z0-9]{8}-[a-zA-Z0-9]{8}$" 
+                        <input type="text" id="warpPlusLicense" name="warpPlusLicense" value="${warpPlusLicense}"
+                            pattern="^[a-zA-Z0-9]{8}-[a-zA-Z0-9]{8}-[a-zA-Z0-9]{8}$"
                             title="Please enter a valid Warp Plus license in xxxxxxxx-xxxxxxxx-xxxxxxxx format">
                     </div>
                     <div class="form-control">
@@ -574,15 +574,15 @@ export async function renderHomePage (proxySettings, isPassSet) {
                     <summary><h2>WARP PRO ⚙️</h2></summary>
                     <div class="form-control">
                         <label for="hiddifyNoiseMode">😵‍💫 Hiddify Mode</label>
-                        <input type="text" id="hiddifyNoiseMode" name="hiddifyNoiseMode" 
-                            pattern="^(m[1-6]|h_[0-9A-Fa-f]{2}|g_([0-9A-Fa-f]{2}_){2}[0-9A-Fa-f]{2})$" 
+                        <input type="text" id="hiddifyNoiseMode" name="hiddifyNoiseMode"
+                            pattern="^(m[1-6]|h_[0-9A-Fa-f]{2}|g_([0-9A-Fa-f]{2}_){2}[0-9A-Fa-f]{2})$"
                             title="Enter 'm1-m6', 'h_HEX', 'g_HEX_HEX_HEX' which HEX can be between 00 to ff"
                             value="${hiddifyNoiseMode}" required>
                     </div>
                     <div class="form-control">
                         <label for="nikaNGNoiseMode">😵‍💫 NikaNG Mode</label>
-                        <input type="text" id="nikaNGNoiseMode" name="nikaNGNoiseMode" 
-                            pattern="^(none|quic|random|[0-9A-Fa-f]+)$" 
+                        <input type="text" id="nikaNGNoiseMode" name="nikaNGNoiseMode"
+                            pattern="^(none|quic|random|[0-9A-Fa-f]+)$"
                             title="Enter 'none', 'quic', 'random', or any HEX string like 'ee0000000108aaaa'"
                             value="${nikaNGNoiseMode}" required>
                     </div>
@@ -619,7 +619,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
                 </details>
                 <details>
                     <summary><h2>ROUTING RULES ⚙️</h2></summary>
-                    <div id="routing-rules" class="form-control" style="margin-bottom: 20px;">			
+                    <div id="routing-rules" class="form-control" style="margin-bottom: 20px;">
                         <div class="routing">
                             <input type="checkbox" id="bypass-lan" name="bypass-lan" value="true" ${bypassLAN ? 'checked' : ''}>
                             <label for="bypass-lan">Bypass LAN</label>
@@ -668,7 +668,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
                     </div>
                 </div>
             </form>
-            <hr>            
+            <hr>
             <h2>🔗 NORMAL SUB</h2>
             <div class="table-container">
                 <table id="normal-configs-table">
@@ -853,7 +853,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
                 <h2 style="margin: 0 5px;">💡 MY IP</h2>
                 <button type="button" id="refresh-geo-location" onclick="fetchIPInfo()" style="background: none; margin: 0; border: none; cursor: pointer;">
                     <i class="fa fa-refresh fa-2x" style="color: var(--button-color);" aria-hidden="true"></i>
-                </button>       
+                </button>
             </div>
             <div class="table-container">
                 <table id="ips" style="text-align: center; margin-bottom: 15px; text-wrap-mode: nowrap;">
@@ -907,10 +907,10 @@ export async function renderHomePage (proxySettings, isPassSet) {
         localStorage.getItem('darkMode') === 'enabled' && document.body.classList.add('dark-mode');
 
         document.addEventListener('DOMContentLoaded', async () => {
-            const configForm = document.getElementById('configForm');            
+            const configForm = document.getElementById('configForm');
             const changePass = document.getElementById('openModalBtn');
             const closeBtn = document.querySelector(".close");
-            const passwordChangeForm = document.getElementById('passwordChangeForm');                    
+            const passwordChangeForm = document.getElementById('passwordChangeForm');
             const initialFormData = new FormData(configForm);
             const modal = document.getElementById('myModal');
             const closeQR = document.getElementById('closeQRModal');
@@ -919,7 +919,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
             let qrcodeContainer = document.getElementById('qrcode-container');
             let forcedPassChange = false;
             const darkModeToggle = document.getElementById('darkModeToggle');
-                    
+
             const hasFormDataChanged = () => {
                 const currentFormData = new FormData(configForm);
                 const currentFormDataEntries = [...currentFormData.entries()];
@@ -940,13 +940,13 @@ export async function renderHomePage (proxySettings, isPassSet) {
 
                 return nonCheckboxFieldsChanged || checkboxFieldsChanged;
             };
-            
+
             const enableApplyButton = () => {
                 const isChanged = hasFormDataChanged();
                 applyButton.disabled = !isChanged;
                 applyButton.classList.toggle('disabled', !isChanged);
             };
-                        
+
             passwordChangeForm.addEventListener('submit', event => resetPassword(event));
             document.getElementById('logout').addEventListener('click', event => logout(event));
             configForm.addEventListener('submit', (event) => applySettings(event, configForm));
@@ -957,7 +957,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
                 modal.style.display = "block";
                 document.body.style.overflow = "hidden";
                 forcedPassChange = false;
-            });        
+            });
             closeBtn.addEventListener('click', () => {
                 modal.style.display = "none";
                 document.body.style.overflow = "";
@@ -989,7 +989,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
                         console.error(errorMessage, response.status);
                         alert('⚠️ An error occured, Please try again!\\n⛔ ' + errorMessage);
                         return;
-                    }       
+                    }
                     alert('✅ Panel settings reset to default successfully! 😎');
                     window.location.reload(true);
                 } catch (error) {
@@ -1032,7 +1032,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
             try {
                 const ipResponse = await fetch('https://ipwho.is/' + '?nocache=' + Date.now(), { cache: "no-store" });
                 const ipResponseObj = await ipResponse.json();
-                const geoResponse = await fetch('/my-ip', { 
+                const geoResponse = await fetch('/my-ip', {
                     method: 'POST',
                     body: ipResponseObj.ip
                 });
@@ -1040,7 +1040,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
                 updateUI(ipResponseObj.ip, ipGeoLocation.country, ipGeoLocation.countryCode, ipGeoLocation.city, ipGeoLocation.isp);
                 const cfIPresponse = await fetch('https://ipv4.icanhazip.com/?nocache=' + Date.now(), { cache: "no-store" });
                 const cfIP = await cfIPresponse.text();
-                const cfGeoResponse = await fetch('/my-ip', { 
+                const cfGeoResponse = await fetch('/my-ip', {
                     method: 'POST',
                     body: cfIP.trim()
                 });
@@ -1080,20 +1080,20 @@ export async function renderHomePage (proxySettings, isPassSet) {
                     console.error(errorMessage, response.status);
                     alert('⚠️ An error occured, Please try again!\\n⛔ ' + errorMessage);
                     return;
-                }          
-                ${isWarpPlus
-                    ? `alert('✅ Warp configs upgraded to PLUS successfully! 😎');` 
-                    : `alert('✅ Warp configs updated successfully! 😎');`
                 }
+                ${isWarpPlus
+            ? `alert('✅ Warp configs upgraded to PLUS successfully! 😎');`
+            : `alert('✅ Warp configs updated successfully! 😎');`
+        }
             } catch (error) {
                 console.error('Error:', error);
-            } 
+            }
         }
 
         const handlePortChange = (event) => {
-            
-            if(event.target.checked) { 
-                activePortsNo++ 
+
+            if(event.target.checked) {
+                activePortsNo++
                 defaultHttpsPorts.includes(event.target.name) && activeHttpsPortsNo++;
             } else {
                 activePortsNo--;
@@ -1108,7 +1108,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
                 defaultHttpsPorts.includes(event.target.name) && activeHttpsPortsNo++;
                 return false;
             }
-                
+
             if (activeHttpsPortsNo === 0) {
                 event.preventDefault();
                 event.target.checked = !event.target.checked;
@@ -1117,11 +1117,11 @@ export async function renderHomePage (proxySettings, isPassSet) {
                 return false;
             }
         }
-        
+
         const handleProtocolChange = (event) => {
-            
-            if(event.target.checked) { 
-                activeProtocols++ 
+
+            if(event.target.checked) {
+                activeProtocols++
             } else {
                 activeProtocols--;
             }
@@ -1170,7 +1170,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
             event.preventDefault();
             event.stopPropagation();
             const applyButton = document.getElementById('applyButton');
-            const getValue = (id) => parseInt(document.getElementById(id).value, 10);              
+            const getValue = (id) => parseInt(document.getElementById(id).value, 10);
             const lengthMin = getValue('fragmentLengthMin');
             const lengthMax = getValue('fragmentLengthMax');
             const intervalMin = getValue('fragmentIntervalMin');
@@ -1189,8 +1189,8 @@ export async function renderHomePage (proxySettings, isPassSet) {
             const cleanIPs = document.getElementById('cleanIPs').value?.split(',');
             const proxyIPs = document.getElementById('proxyIP').value?.split(',');
             const chainProxy = document.getElementById('outProxy').value?.trim();
-            const customBypassRules = document.getElementById('customBypassRules').value?.split(',');                    
-            const customBlockRules = document.getElementById('customBlockRules').value?.split(',');                    
+            const customBypassRules = document.getElementById('customBypassRules').value?.split(',');
+            const customBlockRules = document.getElementById('customBlockRules').value?.split(',');
             const formData = new FormData(configForm);
             const isVless = /vless:\\/\\/[^\s@]+@[^\\s:]+:[^\\s]+/.test(chainProxy);
             const isSocksHttp = /^(http|socks):\\/\\/(?:([^:@]+):([^:@]+)@)?([^:@]+):(\\d+)$/.test(chainProxy);
@@ -1207,7 +1207,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
             const checkedPorts = Array.from(document.querySelectorAll('input[id^="port-"]:checked')).map(input => input.id.split('-')[1]);
             formData.append('ports', checkedPorts);
             configForm.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-                !formData.has(checkbox.name) && formData.append(checkbox.name, 'false');    
+                !formData.has(checkbox.name) && formData.append(checkbox.name, 'false');
             });
 
             const invalidIPs = [...cleanIPs, ...proxyIPs, ...customCdnAddrs, ...customBypassRules, ...customBlockRules, customCdnHost, customCdnSni]?.filter(value => {
@@ -1228,29 +1228,29 @@ export async function renderHomePage (proxySettings, isPassSet) {
                 alert('⛔ Invalid IPs or Domains 🫤\\n\\n' + invalidIPs.map(ip => '⚠️ ' + ip).join('\\n'));
                 return false;
             }
-            
+
             if (invalidEndpoints.length) {
                 alert('⛔ Invalid endpoint 🫤\\n\\n' + invalidEndpoints.map(endpoint => '⚠️ ' + endpoint).join('\\n'));
                 return false;
             }
 
             if (lengthMin >= lengthMax || intervalMin > intervalMax || noiseCountMin > noiseCountMax || noiseSizeMin > noiseSizeMax || noiseDelayMin > noiseDelayMax) {
-                alert('⛔ Minimum should be smaller or equal to Maximum! 🫤');               
+                alert('⛔ Minimum should be smaller or equal to Maximum! 🫤');
                 return false;
             }
 
             if (!(isVless && (hasSecurity && validSecurityType || !hasSecurity) && validTransmission) && !isSocksHttp && chainProxy) {
-                alert('⛔ Invalid Config! 🫤 \\n - The chain proxy should be VLESS, Socks or Http!\\n - VLESS transmission should be GRPC,WS or TCP\\n - VLESS security should be TLS,Reality or None\\n - socks or http should be like:\\n + (socks or http)://user:pass@host:port\\n + (socks or http)://host:port');               
+                alert('⛔ Invalid Config! 🫤 \\n - The chain proxy should be VLESS, Socks or Http!\\n - VLESS transmission should be GRPC,WS or TCP\\n - VLESS security should be TLS,Reality or None\\n - socks or http should be like:\\n + (socks or http)://user:pass@host:port\\n + (socks or http)://host:port');
                 return false;
             }
 
             if (isVless && securityType === 'tls' && vlessPort !== '443') {
-                alert('⛔ VLESS TLS port can be only 443 to be used as a proxy chain! 🫤');               
+                alert('⛔ VLESS TLS port can be only 443 to be used as a proxy chain! 🫤');
                 return false;
             }
 
             if (isCustomCdn && !(customCdnAddrs.length && customCdnHost && customCdnSni)) {
-                alert('⛔ All "Custom" fields should be filled or deleted together! 🫤');               
+                alert('⛔ All "Custom" fields should be filled or deleted together! 🫤');
                 return false;
             }
 
@@ -1274,7 +1274,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
                     alert('⚠️ Session expired! Please login again.');
                     window.location.href = '/login';
                     return;
-                }                
+                }
                 alert('✅ Parameters applied successfully 😎');
                 window.location.reload();
             } catch (error) {
@@ -1290,7 +1290,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
                     method: 'GET',
                     credentials: 'same-origin'
                 });
-            
+
                 if (!response.ok) {
                     console.error('Failed to log out:', response.status);
                     return;
@@ -1306,7 +1306,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
             const modal = document.getElementById('myModal');
             const newPasswordInput = document.getElementById('newPassword');
             const confirmPasswordInput = document.getElementById('confirmPassword');
-            const passwordError = document.getElementById('passwordError');             
+            const passwordError = document.getElementById('passwordError');
             const newPassword = newPasswordInput.value;
             const confirmPassword = confirmPasswordInput.value;
 
@@ -1323,7 +1323,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
                 passwordError.textContent = '⚠️ Password must contain at least one capital letter, one number, and be at least 8 characters long.';
                 return false;
             }
-                    
+
             try {
                 const response = await fetch('/panel/password', {
                     method: 'POST',
@@ -1333,7 +1333,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
                     body: newPassword,
                     credentials: 'same-origin'
                 });
-            
+
                 if (response.ok) {
                     modal.style.display = "none";
                     document.body.style.overflow = "";
@@ -1356,7 +1356,7 @@ export async function renderHomePage (proxySettings, isPassSet) {
             }
         }
     </script>
-    </body>	
+    </body>
     </html>`;
 
     return new Response(homePage, {

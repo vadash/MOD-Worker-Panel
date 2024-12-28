@@ -3,11 +3,11 @@ import { getDataset, updateDataset } from "../kv/handlers";
 import { renderHomePage } from "../pages/home";
 
 export function isValidUUID(uuid) {
-	const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[4][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-	return uuidRegex.test(uuid);
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[4][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    return uuidRegex.test(uuid);
 }
 
-export async function resolveDNS (domain) {
+export async function resolveDNS(domain) {
     const dohURL = 'https://cloudflare-dns.com/dns-query';
     const dohURLv4 = `${dohURL}?name=${encodeURIComponent(domain)}&type=A`;
     const dohURLv6 = `${dohURL}?name=${encodeURIComponent(domain)}&type=AAAA`;
@@ -41,13 +41,13 @@ export function isDomain(address) {
 }
 
 export async function handlePanel(request, env) {
-    const auth = await Authenticate(request, env); 
-    if (request.method === 'POST') {     
-        if (!auth) return new Response('Unauthorized or expired session!', { status: 401 });             
-        await updateDataset(request, env); 
+    const auth = await Authenticate(request, env);
+    if (request.method === 'POST') {
+        if (!auth) return new Response('Unauthorized or expired session!', { status: 401 });
+        await updateDataset(request, env);
         return new Response('Success', { status: 200 });
     }
-        
+
     const { proxySettings } = await getDataset(request, env);
     const pwd = await env.bpb.get('pwd');
     if (pwd && !auth) return Response.redirect(`${globalThis.urlOrigin}/login`, 302);

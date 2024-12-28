@@ -6,8 +6,8 @@ export async function getDataset(request, env) {
     let proxySettings, warpConfigs;
 
     try {
-        proxySettings = await env.bpb.get("proxySettings", {type: 'json'});
-        warpConfigs = await env.bpb.get('warpConfigs', {type: 'json'});
+        proxySettings = await env.bpb.get("proxySettings", { type: 'json' });
+        warpConfigs = await env.bpb.get('warpConfigs', { type: 'json' });
     } catch (error) {
         console.log(error);
         throw new Error(`An error occurred while getting KV - ${error}`);
@@ -19,18 +19,18 @@ export async function getDataset(request, env) {
         if (error) throw new Error(`An error occurred while getting Warp configs - ${error}`);
         warpConfigs = configs;
     }
-    
+
     if (globalThis.panelVersion !== proxySettings.panelVersion) proxySettings = await updateDataset(request, env);
     return { proxySettings, warpConfigs }
 }
 
-export async function updateDataset (request, env) {
+export async function updateDataset(request, env) {
     let newSettings = request.method === 'POST' ? await request.formData() : null;
     const isReset = newSettings?.get('resetSettings') === 'true';
     let currentSettings;
     if (!isReset) {
         try {
-            currentSettings = await env.bpb.get("proxySettings", {type: 'json'});
+            currentSettings = await env.bpb.get("proxySettings", { type: 'json' });
         } catch (error) {
             console.log(error);
             throw new Error(`An error occurred while getting current KV settings - ${error}`);
@@ -64,7 +64,7 @@ export async function updateDataset (request, env) {
             console.log(error);
             throw new Error(`An error occurred while resolving remote DNS server, please try agian! - ${error}`);
         }
-    } 
+    }
 
     const proxySettings = {
         ['remoteDNS']: remoteDNS,
@@ -113,9 +113,9 @@ export async function updateDataset (request, env) {
         ['panelVersion']: globalThis.panelVersion
     };
 
-    try {    
+    try {
         await env.bpb.put("proxySettings", JSON.stringify(proxySettings));
-        if (isReset) await updateWarpConfigs(request, env);          
+        if (isReset) await updateWarpConfigs(request, env);
     } catch (error) {
         console.log(error);
         throw new Error(`An error occurred while updating KV - ${error}`);
@@ -133,21 +133,21 @@ function extractChainProxyParams(chainProxy) {
         const params = new URLSearchParams(url.search);
         configParams = {
             protocol: protocol,
-            uuid : url.username,
-            server : url.hostname,
-            port : url.port
+            uuid: url.username,
+            server: url.hostname,
+            port: url.port
         };
-    
-        params.forEach( (value, key) => {
+
+        params.forEach((value, key) => {
             configParams[key] = value;
         });
     } else {
         configParams = {
-            protocol: protocol, 
-            user : url.username,
-            pass : url.password,
-            server : url.host,
-            port : url.port
+            protocol: protocol,
+            user: url.username,
+            pass: url.password,
+            server: url.host,
+            port: url.port
         };
     }
 
@@ -155,7 +155,7 @@ function extractChainProxyParams(chainProxy) {
 }
 
 export async function updateWarpConfigs(request, env) {
-    const auth = await Authenticate(request, env); 
+    const auth = await Authenticate(request, env);
     if (!auth) return new Response('Unauthorized', { status: 401 });
     if (request.method === 'POST') {
         try {

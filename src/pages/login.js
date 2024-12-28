@@ -1,4 +1,4 @@
-export async function renderLoginPage () {
+export async function renderLoginPage() {
     const loginPage = `
     <!DOCTYPE html>
     <html lang="en">
@@ -10,7 +10,7 @@ export async function renderLoginPage () {
         :root {
             --color: black;
             --primary-color: #09639f;
-            --header-color: #09639f; 
+            --header-color: #09639f;
             --background-color: #fff;
             --form-background-color: #f9f9f9;
             --lable-text-color: #333;
@@ -29,7 +29,7 @@ export async function renderLoginPage () {
         body.dark-mode {
             --color: white;
             --primary-color: #09639F;
-            --header-color: #3498DB; 
+            --header-color: #3498DB;
             --background-color: #121212;
             --form-background-color: #121212;
             --lable-text-color: #DFDFDF;
@@ -46,7 +46,7 @@ export async function renderLoginPage () {
             transform: translate(-50%, -50%);
             width: 90%;
         }
-        h1 { font-size: 2.5rem; text-align: center; color: var(--header-color); margin: 0 auto 30px; text-shadow: var(--header-shadow); }        
+        h1 { font-size: 2.5rem; text-align: center; color: var(--header-color); margin: 0 auto 30px; text-shadow: var(--header-shadow); }
         h2 { text-align: center; color: var(--h2-color) }
         .form-container {
             background: var(--form-background-color);
@@ -128,7 +128,7 @@ export async function renderLoginPage () {
                     },
                     body: password
                 });
-            
+
                 if (!response.ok) {
                     passwordError.textContent = '⚠️ Wrong Password!';
                     const errorMessage = await response.text();

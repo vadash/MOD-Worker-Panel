@@ -1,4 +1,4 @@
-export async function renderSecretsPage () {
+export async function renderSecretsPage() {
     const secretsPage = `
     <!DOCTYPE html>
     <html lang="en">
@@ -10,7 +10,7 @@ export async function renderSecretsPage () {
         :root {
             --color: black;
             --primary-color: #09639f;
-            --header-color: #09639f; 
+            --header-color: #09639f;
             --background-color: #fff;
             --form-background-color: #f9f9f9;
             --lable-text-color: #333;
@@ -30,7 +30,7 @@ export async function renderSecretsPage () {
         body.dark-mode {
             --color: white;
             --primary-color: #09639F;
-            --header-color: #3498DB; 
+            --header-color: #3498DB;
             --background-color: #121212;
             --form-background-color: #121212;
             --lable-text-color: #DFDFDF;
@@ -47,7 +47,7 @@ export async function renderSecretsPage () {
             transform: translate(-50%, -50%);
             width: 90%;
         }
-        h1 { font-size: 2.5rem; text-align: center; color: var(--header-color); margin: 0 auto 30px; text-shadow: var(--header-shadow); }        
+        h1 { font-size: 2.5rem; text-align: center; color: var(--header-color); margin: 0 auto 30px; text-shadow: var(--header-shadow); }
         h2 { text-align: center; color: var(--h2-color) }
         strong { color: var(--lable-text-color); }
         .output-container {
@@ -133,39 +133,39 @@ export async function renderSecretsPage () {
             function generateUUID() {
                 return crypto.randomUUID();
             }
-    
+
             function generateStrongPassword() {
                 const charset =
                     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+[]{}|;:',.<>?";
                 let password = '';
                 const randomValues = new Uint8Array(16);
                 crypto.getRandomValues(randomValues);
-    
+
                 for (let i = 0; i < 16; i++) {
                     password += charset[randomValues[i] % charset.length];
                 }
                 return password;
             }
-    
+
             function generateCredentials() {
                 const uuid = generateUUID();
                 const password = generateStrongPassword();
-    
+
                 document.getElementById('uuid').textContent = uuid;
                 document.getElementById('trojan-password').textContent = password;
             }
-    
+
             function copyToClipboard(elementId) {
                 const textToCopy = document.getElementById(elementId).textContent;
                 navigator.clipboard.writeText(textToCopy)
                     .then(() => alert('✅ Copied to clipboard!'))
                     .catch(err => console.error('Failed to copy text:', err));
             }
-    
+
             generateCredentials();
         </script>
     </body>
     </html>`;
 
-    return new Response(secretsPage, { status: 200, headers: {'Content-Type': 'text/html'}});
+    return new Response(secretsPage, { status: 200, headers: { 'Content-Type': 'text/html' } });
 }

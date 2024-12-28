@@ -2,7 +2,7 @@ import { SignJWT, jwtVerify } from 'jose';
 import nacl from 'tweetnacl';
 import { renderLoginPage } from '../pages/login';
 
-async function generateJWTToken (request, env) {
+async function generateJWTToken(request, env) {
     const password = await request.text();
     const savedPass = await env.bpb.get('pwd');
     if (password !== savedPass) return new Response('Method Not Allowed', { status: 405 });
@@ -27,12 +27,12 @@ async function generateJWTToken (request, env) {
     });
 }
 
-function generateSecretKey () {
+function generateSecretKey() {
     const key = nacl.randomBytes(32);
     return Array.from(key, byte => byte.toString(16).padStart(2, '0')).join('');
 }
-  
-export async function Authenticate (request, env) {
+
+export async function Authenticate(request, env) {
     try {
         const secretKey = await env.bpb.get('secretKey');
         const secret = new TextEncoder().encode(secretKey);
@@ -66,7 +66,7 @@ export function logout() {
 export async function resetPassword(request, env) {
     let auth = await Authenticate(request, env);
     const oldPwd = await env.bpb.get('pwd');
-    if (oldPwd && !auth) return new Response('Unauthorized!', { status: 401 });           
+    if (oldPwd && !auth) return new Response('Unauthorized!', { status: 401 });
     const newPwd = await request.text();
     if (newPwd === oldPwd) return new Response('Please enter a new Password!', { status: 400 });
     await env.bpb.put('pwd', newPwd);
