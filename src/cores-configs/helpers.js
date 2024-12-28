@@ -1,14 +1,11 @@
 import { resolveDNS, isDomain } from '../helpers/helpers';
 
 export async function getConfigAddresses(cleanIPs, enableIPv6) {
-    const resolved = await resolveDNS(globalThis.hostName);
-    const defaultIPv6 = enableIPv6 ? resolved.ipv6.map((ip) => `[${ip}]`) : []
+    const ips = cleanIPs ? cleanIPs.split(',') : [];
+    const shuffledIPs = ips.sort(() => Math.random() - 0.5).slice(0, 10);
     return [
-        globalThis.hostName,
-        'www.speedtest.net',
-        ...resolved.ipv4,
-        ...defaultIPv6,
-        ...(cleanIPs ? cleanIPs.split(',') : [])
+        'www.vimeo.com',
+        ...shuffledIPs
     ];
 }
 
