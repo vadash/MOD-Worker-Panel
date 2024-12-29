@@ -6,7 +6,7 @@
 # ==================================================================
 
 # Constant: How many to build
-$howManyToBuild = 4
+$howManyToBuild = 10
 
 # Remove the output directory if it exists
 Remove-Item -Recurse -Force -Path .\output\ -ErrorAction SilentlyContinue

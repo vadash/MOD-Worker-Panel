@@ -2,6 +2,7 @@ import { default as JsConfuser } from 'js-confuser';
 import { readFileSync, writeFileSync } from 'fs';
 import { stringLiteral } from '@babel/types';
 
+// XOR and SHIFT key generation. Better pick prime numbers for more random output
 function sieveOfEratosthenes(min, max) {
   var primes = [];
   var sieve = new Array(max + 1).fill(true);
@@ -20,11 +21,26 @@ function sieveOfEratosthenes(min, max) {
   }
   return primes;
 }
-var PRIMES = sieveOfEratosthenes(1000, 255 * 255);
+var PRIMES = sieveOfEratosthenes(1, 255);
 var getRandomPrime = () => PRIMES[Math.floor(Math.random() * PRIMES.length)];
-var SHIFT_VALUE = 1 + Math.floor(Math.random() * 15);
+var SHIFT_KEY = getRandomPrime();
 var XOR_KEY = getRandomPrime();
-console.log("Using XOR_KEY: " + XOR_KEY + " with SHIFT_VALUE: " + SHIFT_VALUE);
+var BASE_KEY = (255 - 32) + Math.floor(Math.random() * 32)
+console.log("Using XOR_KEY: " + XOR_KEY + " with SHIFT_KEY: " + SHIFT_KEY + " with BASE_KEY:" + BASE_KEY);
+
+// identifierGenerator generation. 1 number out of all must be > 1
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+const numbers = [];
+for (let i = 0; i < 5; i++) {
+  numbers.push(getRandomInt(0, 3));
+}
+if (!numbers.some(num => num > 0)) {
+  const randomIndex = getRandomInt(0, 4);
+  numbers[randomIndex] = getRandomInt(1, 3);
+}
+const [ig1, ig2, ig3, ig4, ig5] = numbers;
 
 // Read input code
 var sourceCode = readFileSync('output/_worker.js', 'utf8');
@@ -33,46 +49,43 @@ var options = {
   // REQUIRED
   target: 'node',
 
-  // ANTISIG
+  // ANTISIG, always ON
   stringSplitting: true,
   stringConcealing: true,
   renameVariables: true,
   renameGlobals: true,
   renameLabels: true,
   identifierGenerator: {
-    randomized: Math.floor(Math.random() * 3),
-    hexadecimal: Math.floor(Math.random() * 3),
-    zeroWidth: Math.floor(Math.random() * 3),
-    number: Math.floor(Math.random() * 3),
-    mangled: 0,
+    randomized: ig1,
+    hexadecimal: ig2,
+    zeroWidth: ig3,
+    number: ig4,
+    mangled: ig5,
   },
 
   customStringEncodings: [
     {
-      // Bitwise rotate + XOR decoder function
+      // Custom decoder function
       code: `
     function {fnName}(str) {
         return str.split('')
             .map(char => {
                 var code = char.charCodeAt(0);
-                // First undo XOR
                 code = code ^ ${XOR_KEY};
-                // Then undo rotate right by SHIFT_VALUE
-                return String.fromCharCode(((code >>> ${SHIFT_VALUE}) | (code << (16 - ${SHIFT_VALUE}))) & 0xFFFF
-                );
+                code = (code - ${SHIFT_KEY} + ${BASE_KEY}) % ${BASE_KEY};
+                return String.fromCharCode(code);
             })
             .join('');
     }`,
-      // Bitwise rotate + XOR encoder function
+      // Custom encoder function (hardcoded)
       encode: (str) => {
         return str
           .split('')
           .map((char) => {
             var code = char.charCodeAt(0);
-            // First apply rotate left by SHIFT_VALUE
-            code = ((code << SHIFT_VALUE) | (code >>> (16 - SHIFT_VALUE))) & 0xFFFF;
-            // Then apply XOR
-            return String.fromCharCode(code ^ XOR_KEY);
+            code = (code + SHIFT_KEY) % BASE_KEY;
+            code = code ^ XOR_KEY;
+            return String.fromCharCode(code);
           })
           .join('');
       },
@@ -82,17 +95,17 @@ var options = {
   // FAST
   movedDeclarations: true,
   objectExtraction: true,
-  calculator: true,
   compact: true,
   hexadecimalNumbers: true,
-  deadCode: 0.05,
   astScrambler: true,
+  calculator: true,
+  deadCode: false,
 
   // OPTIONAL
-  dispatcher: true,
-  duplicateLiteralsRemoval: true,
-  flatten: true,
-  preserveFunctionLength: true,
+  dispatcher: false,
+  duplicateLiteralsRemoval: false,
+  flatten: false,
+  preserveFunctionLength: false,
 
   // SLOW
   globalConcealing: false,
