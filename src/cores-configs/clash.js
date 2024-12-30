@@ -637,7 +637,7 @@ const clashConfigTemp = {
         {
             "name": "",
             "type": "url-test",
-            "url": "https://www.gstatic.com/generate_204",
+            "url": "https://pastebin.com/raw/E3xeXQmT",
             "interval": 30,
             "tolerance": 50,
             "proxies": []

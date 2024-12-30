@@ -965,7 +965,7 @@ const xrayConfigTemp = {
     },
     observatory: {
         probeInterval: "30s",
-        probeURL: "https://www.gstatic.com/generate_204",
+        probeURL: "https://pastebin.com/raw/E3xeXQmT",
         subjectSelector: ["prox"],
         EnableConcurrency: true,
     },

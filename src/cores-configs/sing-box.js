@@ -789,7 +789,7 @@ const singboxConfigTemp = {
             type: "urltest",
             tag: "",
             outbounds: [],
-            url: "https://www.gstatic.com/generate_204",
+            url: "https://pastebin.com/raw/E3xeXQmT",
             interval: ""
         },
         {
