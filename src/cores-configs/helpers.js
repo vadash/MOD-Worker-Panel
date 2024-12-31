@@ -1,11 +1,50 @@
 import { resolveDNS, isDomain } from '../helpers/helpers';
 
+const MAX_IPS_TO_PICK = 8;
+
 export async function getConfigAddresses(cleanIPs, enableIPv6) {
     const ips = cleanIPs ? cleanIPs.split(',') : [];
-    const shuffledIPs = ips.sort(() => Math.random() - 0.5).slice(0, 10);
+    
+    // Group IPs by first two octets
+    const ipGroups = {};
+    ips.forEach(ip => {
+        if (isIPv4(ip)) {
+            const [first, second] = ip.split('.');
+            const groupKey = `${first}.${second}`;
+            if (!ipGroups[groupKey]) {
+                ipGroups[groupKey] = [];
+            }
+            ipGroups[groupKey].push(ip);
+        }
+    });
+
+    // Get unique group keys and shuffle them
+    const groupKeys = Object.keys(ipGroups);
+    const shuffledGroups = groupKeys.sort(() => Math.random() - 0.5);
+    
+    let selectedIPs = [];
+    
+    // Try to get one IP from each group first (up to MAX_IPS_TO_PICK)
+    shuffledGroups.slice(0, MAX_IPS_TO_PICK).forEach(groupKey => {
+        const groupIPs = ipGroups[groupKey];
+        const randomIP = groupIPs[Math.floor(Math.random() * groupIPs.length)];
+        selectedIPs.push(randomIP);
+    });
+
+    // If we don't have enough IPs yet, fill the rest randomly from any group
+    if (selectedIPs.length < MAX_IPS_TO_PICK) {
+        const remainingCount = MAX_IPS_TO_PICK - selectedIPs.length;
+        const allRemainingIPs = ips.filter(ip => !selectedIPs.includes(ip));
+        const additionalIPs = allRemainingIPs
+            .sort(() => Math.random() - 0.5)
+            .slice(0, remainingCount);
+        selectedIPs = [...selectedIPs, ...additionalIPs];
+    }
+
     return [
         'www.vimeo.com',
-        ...shuffledIPs
+        'www.speedtest.net',
+        ...selectedIPs
     ];
 }
 
