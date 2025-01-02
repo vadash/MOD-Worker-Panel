@@ -71,15 +71,10 @@ for ($i = 0; $i -lt $howManyToBuild; $i++) {
             New-Item -ItemType Directory -Path $zipsDirectory
         }
 
-        # Use 7-Zip for ultra compression
-        # Parameters:
-        # a - add to archive
-        # -tzip - zip format
-        # -mx=9 - maximum compression level
-        # -mm=Deflate - deflate compression method
-        # -mfb=258 - maximum number of fast bytes
-        # -mpass=15 - maximum number of passes
+        # max compression
         & $sevenZipPath a -tzip -mx=9 -mm=Deflate -mfb=258 -mpass=15 "$zipsDirectory\$zipFileName" ".\output\_worker.js"
+        # no compression
+        & $sevenZipPath a -tzip -mx=0 "$zipsDirectory\$zipFileName" ".\output\_worker.js"
 
         # Clear the output directory except for the zips folder
         Get-ChildItem -Path .\output\ -Exclude zips | Remove-Item -Recurse -Force

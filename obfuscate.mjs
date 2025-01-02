@@ -21,7 +21,7 @@ function sieveOfEratosthenes(min, max) {
   }
   return primes;
 }
-var BASE_KEY = 0xFF
+var BASE_KEY = 128 + Math.floor(Math.random() * 128)
 var PRIMES = sieveOfEratosthenes(1, BASE_KEY);
 var getRandomPrime = () => PRIMES[Math.floor(Math.random() * PRIMES.length)];
 var SHIFT_KEY = getRandomPrime();
@@ -56,11 +56,11 @@ var options = {
   renameGlobals: true,
   renameLabels: true,
   identifierGenerator: {
-    randomized: ig1,
-    hexadecimal: ig2,
-    zeroWidth: ig3,
-    number: ig4,
-    mangled: ig5,
+    randomized: 0,
+    hexadecimal: 0,
+    zeroWidth: 0,
+    number: 0,
+    mangled: 1,
   },
 
   customStringEncodings: [
@@ -99,7 +99,7 @@ var options = {
   compact: true,
   hexadecimalNumbers: true,
   astScrambler: true,
-  calculator: true,
+  calculator: false,
   deadCode: false,
 
   // OPTIONAL
