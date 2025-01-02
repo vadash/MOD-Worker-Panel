@@ -21,11 +21,11 @@ function sieveOfEratosthenes(min, max) {
   }
   return primes;
 }
-var PRIMES = sieveOfEratosthenes(1, 0xFFFF);
+var BASE_KEY = 0xFF
+var PRIMES = sieveOfEratosthenes(1, BASE_KEY);
 var getRandomPrime = () => PRIMES[Math.floor(Math.random() * PRIMES.length)];
 var SHIFT_KEY = getRandomPrime();
 var XOR_KEY = getRandomPrime();
-var BASE_KEY = 0xFFFF
 console.log("Using XOR_KEY: " + XOR_KEY + " with SHIFT_KEY: " + SHIFT_KEY + " with BASE_KEY:" + BASE_KEY);
 
 // identifierGenerator generation. 1 number out of all must be > 1
@@ -83,6 +83,7 @@ var options = {
           .split('')
           .map((char) => {
             var code = char.charCodeAt(0);
+            if (code > 127) return '';
             code = (code + SHIFT_KEY) % BASE_KEY;
             code = code ^ XOR_KEY;
             return String.fromCharCode(code);
