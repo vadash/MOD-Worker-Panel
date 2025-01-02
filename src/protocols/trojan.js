@@ -1,5 +1,4 @@
 import { connect } from 'cloudflare:sockets';
-import sha256 from 'js-sha256';
 
 export async function trojanOverWSHandler(request) {
     const webSocketPair = new WebSocketPair();
@@ -86,7 +85,7 @@ async function parseTrojanHeader(buffer) {
     }
 
     const password = new TextDecoder().decode(buffer.slice(0, crLfIndex));
-    if (password !== sha256.sha224(globalThis.trojanPassword)) {
+    if (password !== globalThis.trojanHash) {
         return {
             hasError: true,
             message: "invalid password",
