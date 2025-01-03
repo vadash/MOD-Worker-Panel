@@ -15,46 +15,49 @@ export default {
         try {
             initializeParams(request, env);
             const upgradeHeader = request.headers.get('Upgrade');
-            if (!upgradeHeader || upgradeHeader !== 'websocket') {
-                switch (globalThis.pathName) {
-                    case '/update-warp':
-                        return await updateWarpConfigs(request, env);
 
-                    case `/sub/${globalThis.userID}`:
-                        if (globalThis.client === 'sfa') return await getSingBoxCustomConfig(request, env, false);
-                        if (globalThis.client === 'clash') return await getClashNormalConfig(request, env);
-                        if (globalThis.client === 'xray') return await getXrayCustomConfigs(request, env, false);
-                        return await getNormalConfigs(request, env);
-
-                    case `/fragsub/${globalThis.userID}`:
-                        return globalThis.client === 'hiddify'
-                            ? await getSingBoxCustomConfig(request, env, true)
-                            : await getXrayCustomConfigs(request, env, true);
-
-                    case `/warpsub/${globalThis.userID}`:
-                        if (globalThis.client === 'clash') return await getClashWarpConfig(request, env);
-                        if (globalThis.client === 'singbox' || globalThis.client === 'hiddify') return await getSingBoxWarpConfig(request, env, globalThis.client);
-                        return await getXrayWarpConfigs(request, env, globalThis.client);
-
-                    case '/panel':
-                        return await handlePanel(request, env);
-
-                    case '/login':
-                        return await login(request, env);
-
-                    case '/logout':
-                        return logout();
-
-                    case '/panel/password':
-                        return await resetPassword(request, env);
-
-                    default:
-                        return await getMyIP(request);
-                }
-            } else {
+            // Prioritize vless/trojan proxy requests
+            if (upgradeHeader === 'websocket') {
                 return globalThis.pathName.startsWith('/tr')
                     ? await trojanOverWSHandler(request)
                     : await vlessOverWSHandler(request);
+            }
+
+            // Handle other paths
+            switch (globalThis.pathName) {
+                case '/update-warp':
+                    return await updateWarpConfigs(request, env);
+
+                case `/sub/${globalThis.userID}`:
+                    if (globalThis.client === 'sfa') return await getSingBoxCustomConfig(request, env, false);
+                    if (globalThis.client === 'clash') return await getClashNormalConfig(request, env);
+                    if (globalThis.client === 'xray') return await getXrayCustomConfigs(request, env, false);
+                    return await getNormalConfigs(request, env);
+
+                case `/fragsub/${globalThis.userID}`:
+                    return globalThis.client === 'hiddify'
+                        ? await getSingBoxCustomConfig(request, env, true)
+                        : await getXrayCustomConfigs(request, env, true);
+
+                case `/warpsub/${globalThis.userID}`:
+                    if (globalThis.client === 'clash') return await getClashWarpConfig(request, env);
+                    if (globalThis.client === 'singbox' || globalThis.client === 'hiddify') return await getSingBoxWarpConfig(request, env, globalThis.client);
+                    return await getXrayWarpConfigs(request, env, globalThis.client);
+
+                case '/panel':
+                    return await handlePanel(request, env);
+
+                case '/login':
+                    return await login(request, env);
+
+                case '/logout':
+                    return logout();
+
+                case '/panel/password':
+                    return await resetPassword(request, env);
+
+                default:
+                    return await getMyIP(request);
             }
         } catch (err) {
             return await renderErrorPage(err);
