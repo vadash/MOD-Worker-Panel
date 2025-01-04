@@ -21,21 +21,35 @@ Remove-Item -Recurse -Force -Path .\output\ -ErrorAction SilentlyContinue
 # Forbidden strings
 $forbiddenStrings = "vless", "trojan", "user", "warp", "noise", "hiddify", "bypass", "sing", "bpb", "edge", "tunnel", "epeius", "cmliu", "v2ray", "vpn"
 
-for ($i = 0; $i -lt $howManyToBuild; $i++) {
+# Build worker once
+try {
+    # Ensure the output directory exists
+    if (!(Test-Path -Path .\output\)) {
+        New-Item -ItemType Directory -Path .\output\
+    }
+
+    # Build the worker
+    npx wrangler deploy --dry-run --outdir output
+    
+    # Rename worker
+    Rename-Item -Path ".\output\worker.js" -NewName "_worker.js"
+    
+    # Remove comments from worker
+    npx terser output\_worker.js -o output\_worker.js --comments false
+    
+    # Store the original worker content
+    $originalWorker = Get-Content -Path .\output\_worker.js -Raw
+} catch {
+    Write-Host "Failed to build worker: $_"
+    pause
+    exit 1
+}
+
+$successfulBuilds = 0
+while ($successfulBuilds -lt $howManyToBuild) {
     try {
-        # Ensure the output directory exists
-        if (!(Test-Path -Path .\output\)) {
-            New-Item -ItemType Directory -Path .\output\
-        }
-
-        # Build the worker
-        npx wrangler deploy --dry-run --outdir output
-
-        # Rename worker
-        Rename-Item -Path ".\output\worker.js" -NewName "_worker.js"
-
-        # Remove comments from worker
-        npx terser output\_worker.js -o output\_worker.js --comments false
+        # Create fresh copy of worker
+        Set-Content -Path .\output\_worker.js -Value $originalWorker
 
         # Obfuscate the worker with proper tool
         node .\obfuscate.mjs
@@ -45,7 +59,7 @@ for ($i = 0; $i -lt $howManyToBuild; $i++) {
         $forbiddenFound = $false
         foreach ($string in $forbiddenStrings) {
             if ($workerScript -imatch $string) {
-                Write-Host "Warning: Forbidden string '$string' found in worker script. Skipping this build."
+                Write-Host "Warning: Forbidden string '$string' found in worker script. Retrying..."
                 [System.Console]::Beep(800,500)
                 $forbiddenFound = $true
                 break
@@ -54,7 +68,6 @@ for ($i = 0; $i -lt $howManyToBuild; $i++) {
 
         # Skip to the next iteration if a forbidden string was found
         if ($forbiddenFound) {
-            Get-ChildItem -Path .\output\ -Exclude zips | Remove-Item -Recurse -Force
             continue
         }
 
@@ -72,16 +85,20 @@ for ($i = 0; $i -lt $howManyToBuild; $i++) {
         }
 
         # max compression
-        & $sevenZipPath a -tzip -mx=9 -mm=Deflate -mfb=258 -mpass=15 "$zipsDirectory\$zipFileName" ".\output\_worker.js"
+        #& $sevenZipPath a -tzip -mx=9 -mm=Deflate -mfb=258 -mpass=15 "$zipsDirectory\$zipFileName" ".\output\_worker.js"
         # no compression
         & $sevenZipPath a -tzip -mx=0 "$zipsDirectory\$zipFileName" ".\output\_worker.js"
 
-        # Clear the output directory except for the zips folder
-        Get-ChildItem -Path .\output\ -Exclude zips | Remove-Item -Recurse -Force
+        # Increment successful builds counter only after everything succeeds
+        $successfulBuilds++
+        Write-Host "Successfully created worker $successfulBuilds of $howManyToBuild"
 
     } catch {
         Write-Host "An error occurred: $_"
-        pause
-        exit
+        continue
     }
 }
+
+# Clean up temporary files
+Get-ChildItem -Path .\output\ -Exclude zips | Remove-Item -Recurse -Force
+Write-Host "Build process completed. Created $successfulBuilds workers."
