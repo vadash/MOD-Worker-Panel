@@ -515,94 +515,6 @@ export async function renderHomePage(proxySettings, isPassSet) {
                     </div>
                 </details>
                 <details>
-                    <summary><h2>WARP GENERAL ⚙️</h2></summary>
-                    <div class="form-control">
-                        <label for="warpEndpoints">✨ Endpoints</label>
-                        <input type="text" id="warpEndpoints" name="warpEndpoints" value="${warpEndpoints.replaceAll(",", " , ")}" required>
-                    </div>
-                    <div class="form-control">
-                        <label for="warpFakeDNS">🧢 Fake DNS</label>
-                        <div class="input-with-select">
-                            <select id="warpFakeDNS" name="warpFakeDNS">
-                                <option value="true" ${warpFakeDNS ? 'selected' : ''}>Enabled</option>
-                                <option value="false" ${!warpFakeDNS ? 'selected' : ''}>Disabled</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-control">
-                        <label for="warpEnableIPv6">🔛 IPv6</label>
-                        <div class="input-with-select">
-                            <select id="warpEnableIPv6" name="warpEnableIPv6">
-                                <option value="true" ${warpEnableIPv6 ? 'selected' : ''}>Enabled</option>
-                                <option value="false" ${!warpEnableIPv6 ? 'selected' : ''}>Disabled</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-control">
-                        <label for="warpPlusLicense">➕ Warp+ License</label>
-                        <input type="text" id="warpPlusLicense" name="warpPlusLicense" value="${warpPlusLicense}"
-                            pattern="^[a-zA-Z0-9]{8}-[a-zA-Z0-9]{8}-[a-zA-Z0-9]{8}$"
-                            title="Please enter a valid Warp Plus license in xxxxxxxx-xxxxxxxx-xxxxxxxx format">
-                    </div>
-                    <div class="form-control">
-                        <label for="refreshBtn">♻️ Warp Configs</label>
-                        <button id="refreshBtn" type="button" class="button" style="padding: 10px 0;" onclick="getWarpConfigs()">
-                            Update<span class="material-symbols-outlined">autorenew</span>
-                        </button>
-                    </div>
-                    <div class="form-control">
-                        <label for="bestWarpInterval">🔄 Best Interval</label>
-                        <input type="number" id="bestWarpInterval" name="bestWarpInterval" min="10" max="90" value="${bestWarpInterval}">
-                    </div>
-                </details>
-                <details>
-                    <summary><h2>WARP PRO ⚙️</h2></summary>
-                    <div class="form-control">
-                        <label for="hiddifyNoiseMode">😵‍💫 Hiddify Mode</label>
-                        <input type="text" id="hiddifyNoiseMode" name="hiddifyNoiseMode"
-                            pattern="^(m[1-6]|h_[0-9A-Fa-f]{2}|g_([0-9A-Fa-f]{2}_){2}[0-9A-Fa-f]{2})$"
-                            title="Enter 'm1-m6', 'h_HEX', 'g_HEX_HEX_HEX' which HEX can be between 00 to ff"
-                            value="${hiddifyNoiseMode}" required>
-                    </div>
-                    <div class="form-control">
-                        <label for="nikaNGNoiseMode">😵‍💫 NikaNG Mode</label>
-                        <input type="text" id="nikaNGNoiseMode" name="nikaNGNoiseMode"
-                            pattern="^(none|quic|random|[0-9A-Fa-f]+)$"
-                            title="Enter 'none', 'quic', 'random', or any HEX string like 'ee0000000108aaaa'"
-                            value="${nikaNGNoiseMode}" required>
-                    </div>
-                    <div class="form-control">
-                        <label for="noiseCountMin">🎚️ Noise Count</label>
-                        <div class="min-max">
-                            <input type="number" id="noiseCountMin" name="noiseCountMin"
-                                value="${noiseCountMin}" min="1" required>
-                            <span> - </span>
-                            <input type="number" id="noiseCountMax" name="noiseCountMax"
-                                value="${noiseCountMax}" min="1" required>
-                        </div>
-                    </div>
-                    <div class="form-control">
-                        <label for="noiseSizeMin">📏 Noise Size</label>
-                        <div class="min-max">
-                            <input type="number" id="noiseSizeMin" name="noiseSizeMin"
-                                value="${noiseSizeMin}" min="1" required>
-                            <span> - </span>
-                            <input type="number" id="noiseSizeMax" name="noiseSizeMax"
-                                value="${noiseSizeMax}" min="1" required>
-                        </div>
-                    </div>
-                    <div class="form-control">
-                        <label for="noiseDelayMin">🕞 Noise Delay</label>
-                        <div class="min-max">
-                            <input type="number" id="noiseDelayMin" name="noiseDelayMin"
-                                value="${noiseDelayMin}" min="1" required>
-                            <span> - </span>
-                            <input type="number" id="noiseDelayMax" name="noiseDelayMax"
-                                value="${noiseDelayMax}" min="1" required>
-                        </div>
-                    </div>
-                </details>
-                <details>
                     <summary><h2>ROUTING RULES ⚙️</h2></summary>
                     <div id="routing-rules" class="form-control" style="margin-bottom: 20px;">
                         <div class="routing">
@@ -743,69 +655,6 @@ export async function renderHomePage(proxySettings, isPassSet) {
                     </tr>
                 </table>
             </div>
-            <h2>🔗 WARP SUB</h2>
-            <div class="table-container">
-                <table id="normal-configs-table">
-                    <tr>
-                        <th>Application</th>
-                        <th>Subscription</th>
-                    </tr>
-                    <tr>
-                        <td>
-                            ${supportedApps(['v2rayNG', 'v2rayN', 'Streisand'])}
-                        </td>
-                        <td>
-                            ${subQR('warpsub', 'xray', 'BPB-Warp', 'Warp Subscription')}
-                            ${subURL('warpsub', 'xray', 'BPB-Warp')}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            ${supportedApps(['Hiddify', 'sing-box', 'v2rayN (sing-box)'])}
-                        </td>
-                        <td>
-                            ${subQR('sub', 'singbox', 'BPB-Warp', 'Warp Subscription', true)}
-                            ${subURL('warpsub', 'singbox', 'BPB-Warp')}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            ${supportedApps(['Clash Meta', 'Clash Verge', 'FlClash', 'Stash', 'v2rayN (mihomo)'])}
-                        </td>
-                        <td>
-                            ${subQR('warpsub', 'clash', 'BPB-Warp', 'Warp Subscription')}
-                            ${subURL('warpsub', 'clash', 'BPB-Warp')}
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <h2>🔗 WARP PRO SUB</h2>
-            <div class="table-container">
-                <table id="warp-pro-configs-table">
-                    <tr>
-                        <th>Application</th>
-                        <th>Subscription</th>
-                    </tr>
-                    <tr>
-                        <td>
-                            ${supportedApps(['NikaNG', 'MahsaNG', 'v2rayN-PRO'])}
-                        </td>
-                        <td>
-                            ${subQR('warpsub', 'nikang', 'BPB-Warp-Pro', 'Warp Pro Subscription')}
-                            ${subURL('warpsub', 'nikang', 'BPB-Warp-Pro')}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            ${supportedApps(['Hiddify'])}
-                        </td>
-                        <td>
-                            ${subQR('warpsub', 'hiddify', 'BPB-Warp-Pro', 'Warp Pro Subscription', true)}
-                            ${subURL('warpsub', 'hiddify', 'BPB-Warp-Pro')}
-                        </td>
-                    </tr>
-                </table>
-            </div>
             <div id="myModal" class="modal">
                 <div class="modal-content">
                     <span class="close">&times;</span>
@@ -834,38 +683,6 @@ export async function renderHomePage(proxySettings, isPassSet) {
                 </div>
             </div>
             <hr>
-            <div class="header-container">
-                <h2 style="margin: 0 5px;">💡 MY IP</h2>
-                <button type="button" id="refresh-geo-location" onclick="fetchIPInfo()" style="background: none; margin: 0; border: none; cursor: pointer;">
-                    <i class="fa fa-refresh fa-2x" style="color: var(--button-color);" aria-hidden="true"></i>
-                </button>
-            </div>
-            <div class="table-container">
-                <table id="ips" style="text-align: center; margin-bottom: 15px; text-wrap-mode: nowrap;">
-                    <tr>
-                        <th>Target Address</th>
-                        <th>IP</th>
-                        <th>Country</th>
-                        <th>City</th>
-                        <th>ISP</th>
-                    </tr>
-                    <tr>
-                        <td>Cloudflare CDN</td>
-                        <td id="cf-ip"></td>
-                        <td><b id="cf-country"></b></td>
-                        <td><b id="cf-city"></b></td>
-                        <td><b id="cf-isp"></b></td>
-                    </tr>
-                    <tr>
-                        <td>Others</td>
-                        <td id="ip"></td>
-                        <td><b id="country"></b></td>
-                        <td><b id="city"></b></td>
-                        <td><b id="isp"></b></td>
-                    </tr>
-                </table>
-            </div>
-            <hr>
             <div class="footer">
                 <button id="openModalBtn" class="button">Change Password</button>
                 <button type="button" id="logout" style="background: none; color: var(--color); margin: 0; border: none; cursor: pointer;">
@@ -886,7 +703,6 @@ export async function renderHomePage(proxySettings, isPassSet) {
         let activePortsNo = ${ports.length};
         let activeHttpsPortsNo = ${ports.filter(port => globalThis.defaultHttpsPorts.includes(port)).length};
         let activeProtocols = ${activeProtocols};
-        const warpPlusLicense = '${warpPlusLicense}';
         localStorage.getItem('darkMode') === 'enabled' && document.body.classList.add('dark-mode');
 
         document.addEventListener('DOMContentLoaded', async () => {
@@ -995,83 +811,7 @@ export async function renderHomePage(proxySettings, isPassSet) {
                 forcedPassChange = true;
                 changePass.click();
             }
-
-            await fetchIPInfo();
         });
-
-        const fetchIPInfo = async () => {
-            const updateUI = (ip = '-', country = '-', countryCode = '-', city = '-', isp = '-', cfIP) => {
-                const flag = countryCode !== '-' ? String.fromCodePoint(...[...countryCode].map(c => 0x1F1E6 + c.charCodeAt(0) - 65)) : '';
-                document.getElementById(cfIP ? 'cf-ip' : 'ip').textContent = ip;
-                document.getElementById(cfIP ? 'cf-country' : 'country').textContent = country + ' ' + flag;
-                document.getElementById(cfIP ? 'cf-city' : 'city').textContent = city;
-                document.getElementById(cfIP ? 'cf-isp' : 'isp').textContent = isp;
-            };
-
-            const refreshIcon = document.getElementById("refresh-geo-location").querySelector('i');
-            refreshIcon.classList.add('fa-spin');
-            document.body.style.cursor = 'wait';
-
-            try {
-                const ipResponse = await fetch('https://ipwho.is/' + '?nocache=' + Date.now(), { cache: "no-store" });
-                const ipResponseObj = await ipResponse.json();
-                const geoResponse = await fetch('/my-ip', {
-                    method: 'POST',
-                    body: ipResponseObj.ip
-                });
-                const ipGeoLocation = await geoResponse.json();
-                updateUI(ipResponseObj.ip, ipGeoLocation.country, ipGeoLocation.countryCode, ipGeoLocation.city, ipGeoLocation.isp);
-                const cfIPresponse = await fetch('https://ipv4.icanhazip.com/?nocache=' + Date.now(), { cache: "no-store" });
-                const cfIP = await cfIPresponse.text();
-                const cfGeoResponse = await fetch('/my-ip', {
-                    method: 'POST',
-                    body: cfIP.trim()
-                });
-                const cfIPGeoLocation = await cfGeoResponse.json();
-                updateUI(cfIP, cfIPGeoLocation.country, cfIPGeoLocation.countryCode, cfIPGeoLocation.city, cfIPGeoLocation.isp, true);
-                refreshIcon.classList.remove('fa-spin');
-                document.body.style.cursor = 'default';
-            } catch (error) {
-                console.error('Error fetching IP address:', error);
-            }
-        }
-
-        const getWarpConfigs = async () => {
-            const license = document.getElementById('warpPlusLicense').value;
-            if (license !== warpPlusLicense) {
-                alert('⚠️ First APPLY SETTINGS and then update Warp configs!');
-                return false;
-            }
-            const confirmReset = confirm('⚠️ Are you sure?');
-            if(!confirmReset) return;
-            const refreshBtn = document.getElementById('refreshBtn');
-
-            try {
-                document.body.style.cursor = 'wait';
-                const refreshButtonVal = refreshBtn.innerHTML;
-                refreshBtn.innerHTML = '⌛ Loading...';
-
-                const response = await fetch('/update-warp', {
-                    method: 'POST',
-                    credentials: 'include'
-                });
-
-                document.body.style.cursor = 'default';
-                refreshBtn.innerHTML = refreshButtonVal;
-                if (!response.ok) {
-                    const errorMessage = await response.text();
-                    console.error(errorMessage, response.status);
-                    alert('⚠️ An error occured, Please try again!\\n⛔ ' + errorMessage);
-                    return;
-                }
-                ${isWarpPlus
-            ? `alert('✅ Warp configs upgraded to PLUS successfully! 😎');`
-            : `alert('✅ Warp configs updated successfully! 😎');`
-        }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
 
         const handlePortChange = (event) => {
 
@@ -1162,13 +902,6 @@ export async function renderHomePage(proxySettings, isPassSet) {
             const customCdnHost = document.getElementById('customCdnHost').value;
             const customCdnSni = document.getElementById('customCdnSni').value;
             const isCustomCdn = customCdnAddrs.length || customCdnHost !== '' || customCdnSni !== '';
-            const warpEndpoints = document.getElementById('warpEndpoints').value?.replaceAll(' ', '').split(',');
-            const noiseCountMin = getValue('noiseCountMin');
-            const noiseCountMax = getValue('noiseCountMax');
-            const noiseSizeMin = getValue('noiseSizeMin');
-            const noiseSizeMax = getValue('noiseSizeMax');
-            const noiseDelayMin = getValue('noiseDelayMin');
-            const noiseDelayMax = getValue('noiseDelayMax');
             const cleanIPs = document.getElementById('cleanIPs').value?.split(',');
             const proxyIPs = document.getElementById('proxyIP').value?.split(',');
             const chainProxy = document.getElementById('outProxy').value?.trim();
@@ -1186,7 +919,6 @@ export async function renderHomePage(proxySettings, isPassSet) {
             const vlessPort = match ? match[1] : null;
             const validTransmission = /type=(tcp|grpc|ws)/.test(chainProxy);
             const validIPDomain = /^((?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,})|(?:(?:25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(?:25[0-5]|2[0-4]\\d|[01]?\\d\\d?)(?:\\/(?:\\d|[12]\\d|3[0-2]))?|\\[(?:(?:[a-fA-F0-9]{1,4}:){7}[a-fA-F0-9]{1,4}|(?:[a-fA-F0-9]{1,4}:){1,7}:|(?:[a-fA-F0-9]{1,4}:){1,6}:[a-fA-F0-9]{1,4}|(?:[a-fA-F0-9]{1,4}:){1,5}(?::[a-fA-F0-9]{1,4}){1,2}|(?:[a-fA-F0-9]{1,4}:){1,4}(?::[a-fA-F0-9]{1,4}){1,3}|(?:[a-fA-F0-9]{1,4}:){1,3}(?::[a-fA-F0-9]{1,4}){1,4}|(?:[a-fA-F0-9]{1,4}:){1,2}(?::[a-fA-F0-9]{1,4}){1,5}|[a-fA-F0-9]{1,4}:(?::[a-fA-F0-9]{1,4}){1,6}|:(?::[a-fA-F0-9]{1,4}){1,7})\\](?:\\/(?:12[0-8]|1[0-1]\\d|[0-9]?\\d))?)$/i;
-            const validEndpoint = /^(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,}|(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)|\\[(?:[a-fA-F0-9]{1,4}:){7}[a-fA-F0-9]{1,4}\\]|\\[(?:[a-fA-F0-9]{1,4}:){1,7}:\\]|\\[(?:[a-fA-F0-9]{1,4}:){1,6}:[a-fA-F0-9]{1,4}\\]|\\[(?:[a-fA-F0-9]{1,4}:){1,5}(?::[a-fA-F0-9]{1,4}){1,2}\\]|\\[(?:[a-fA-F0-9]{1,4}:){1,4}(?::[a-fA-F0-9]{1,4}){1,3}\\]|\\[(?:[a-fA-F0-9]{1,4}:){1,3}(?::[a-fA-F0-9]{1,4}){1,4}\\]|\\[(?:[a-fA-F0-9]{1,4}:){1,2}(?::[a-fA-F0-9]{1,4}){1,5}\\]|\\[[a-fA-F0-9]{1,4}:(?::[a-fA-F0-9]{1,4}){1,6}\\]|\\[:(?::[a-fA-F0-9]{1,4}){1,7}\\]|\\[::(?::[a-fA-F0-9]{1,4}){0,7}\\]):(?:[0-9]{1,5})$/;
             const checkedPorts = Array.from(document.querySelectorAll('input[id^="port-"]:checked')).map(input => input.id.split('-')[1]);
             formData.append('ports', checkedPorts);
             configForm.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
@@ -1200,24 +932,12 @@ export async function renderHomePage(proxySettings, isPassSet) {
                 }
             });
 
-            const invalidEndpoints = warpEndpoints?.filter(value => {
-                if (value) {
-                    const trimmedValue = value.trim();
-                    return !validEndpoint.test(trimmedValue);
-                }
-            });
-
             if (invalidIPs.length) {
                 alert('⛔ Invalid IPs or Domains 🫤\\n\\n' + invalidIPs.map(ip => '⚠️ ' + ip).join('\\n'));
                 return false;
             }
 
-            if (invalidEndpoints.length) {
-                alert('⛔ Invalid endpoint 🫤\\n\\n' + invalidEndpoints.map(endpoint => '⚠️ ' + endpoint).join('\\n'));
-                return false;
-            }
-
-            if (lengthMin >= lengthMax || intervalMin > intervalMax || noiseCountMin > noiseCountMax || noiseSizeMin > noiseSizeMax || noiseDelayMin > noiseDelayMax) {
+            if (lengthMin >= lengthMax || intervalMin > intervalMax) {
                 alert('⛔ Minimum should be smaller or equal to Maximum! 🫤');
                 return false;
             }
