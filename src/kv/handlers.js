@@ -1,4 +1,3 @@
-import { fetchWarpConfigs } from '../protocols/warp';
 import { isDomain, resolveDNS } from '../helpers/helpers';
 import { Authenticate } from '../authentication/auth';
 
@@ -115,7 +114,6 @@ export async function updateDataset(request, env) {
 
     try {
         await env[env.DATABASE].put("proxySettings", JSON.stringify(proxySettings));
-        if (isReset) await updateWarpConfigs(request, env);
     } catch (error) {
         console.log(error);
         throw new Error(`An error occurred while updating KV - ${error}`);
@@ -152,22 +150,4 @@ function extractChainProxyParams(chainProxy) {
     }
 
     return JSON.stringify(configParams);
-}
-
-export async function updateWarpConfigs(request, env) {
-    const auth = await Authenticate(request, env);
-    if (!auth) return new Response('Unauthorized', { status: 401 });
-    if (request.method === 'POST') {
-        try {
-            const { proxySettings } = await getDataset(request, env);
-            const { error: warpPlusError } = await fetchWarpConfigs(env, proxySettings);
-            if (warpPlusError) return new Response(warpPlusError, { status: 400 });
-            return new Response('Warp configs updated successfully', { status: 200 });
-        } catch (error) {
-            console.log(error);
-            return new Response(`An error occurred while updating Warp configs! - ${error}`, { status: 500 });
-        }
-    } else {
-        return new Response('Unsupported request', { status: 405 });
-    }
 }

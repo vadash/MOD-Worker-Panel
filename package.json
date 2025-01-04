@@ -10,7 +10,6 @@
     "wrangler": "^3.99.0"
   },
   "dependencies": {
-    "jose": "^5.9.4",
-    "tweetnacl": "^1.0.3"
+    "jose": "^5.9.4"
   }
 }

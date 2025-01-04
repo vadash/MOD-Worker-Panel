@@ -1,14 +1,13 @@
 import { initializeParams } from './helpers/init';
 import { vlessOverWSHandler } from './protocols/vless';
 import { trojanOverWSHandler } from './protocols/trojan';
-import { updateWarpConfigs } from './kv/handlers';
 import { logout, resetPassword, login } from './authentication/auth';
 import { renderErrorPage } from './pages/error';
-import { getXrayCustomConfigs, getXrayWarpConfigs } from './cores-configs/xray';
-import { getSingBoxCustomConfig, getSingBoxWarpConfig } from './cores-configs/sing-box';
-import { getClashNormalConfig, getClashWarpConfig } from './cores-configs/clash';
+import { getXrayCustomConfigs } from './cores-configs/xray';
+import { getSingBoxCustomConfig } from './cores-configs/sing-box';
+import { getClashNormalConfig } from './cores-configs/clash';
 import { getNormalConfigs } from './cores-configs/normalConfigs';
-import { fallback, getMyIP, handlePanel } from './helpers/helpers';
+import { getMyIP, handlePanel } from './helpers/helpers';
 
 export default {
     async fetch(request, env) {
@@ -25,8 +24,6 @@ export default {
 
             // Handle other paths
             switch (globalThis.pathName) {
-                case '/update-warp':
-                    return await updateWarpConfigs(request, env);
 
                 case `/sub/${globalThis.userID}`:
                     if (globalThis.client === 'sfa') return await getSingBoxCustomConfig(request, env, false);
@@ -38,11 +35,6 @@ export default {
                     return globalThis.client === 'hiddify'
                         ? await getSingBoxCustomConfig(request, env, true)
                         : await getXrayCustomConfigs(request, env, true);
-
-                case `/warpsub/${globalThis.userID}`:
-                    if (globalThis.client === 'clash') return await getClashWarpConfig(request, env);
-                    if (globalThis.client === 'singbox' || globalThis.client === 'hiddify') return await getSingBoxWarpConfig(request, env, globalThis.client);
-                    return await getXrayWarpConfigs(request, env, globalThis.client);
 
                 case '/panel':
                     return await handlePanel(request, env);
