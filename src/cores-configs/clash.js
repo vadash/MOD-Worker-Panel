@@ -303,35 +303,6 @@ function buildClashTrojanOutbound(remark, address, port, host, sni, path, allowI
     };
 }
 
-function buildClashWarpOutbound(warpConfigs, remark, endpoint, chain) {
-    const ipv6Regex = /\[(.*?)\]/;
-    const portRegex = /[^:]*$/;
-    const endpointServer = endpoint.includes('[') ? endpoint.match(ipv6Regex)[1] : endpoint.split(':')[0];
-    const endpointPort = endpoint.includes('[') ? +endpoint.match(portRegex)[0] : +endpoint.split(':')[1];
-    const {
-        warpIPv6,
-        reserved,
-        publicKey,
-        privateKey
-    } = extractWireguardParams(warpConfigs, chain);
-
-    return {
-        "name": remark,
-        "type": "wireguard",
-        "ip": "172.16.0.2/32",
-        "ipv6": warpIPv6,
-        "private-key": privateKey,
-        "server": endpointServer,
-        "port": endpointPort,
-        "public-key": publicKey,
-        "allowed-ips": ["0.0.0.0/0", "::/0"],
-        "reserved": reserved,
-        "udp": true,
-        "mtu": 1280,
-        "dialer-proxy": chain
-    };
-}
-
 function buildClashChainOutbound(chainProxyParams) {
     if (["socks", "http"].includes(chainProxyParams.protocol)) {
         const { protocol, server, port, user, pass } = chainProxyParams;
@@ -410,47 +381,6 @@ function buildClashChainOutbound(chainProxyParams) {
     };
 
     return chainOutbound;
-}
-
-export async function getClashWarpConfig(request, env) {
-    const { proxySettings, warpConfigs } = await getDataset(request, env);
-    const { warpEndpoints } = proxySettings;
-    const config = structuredClone(clashConfigTemp);
-    config.dns = await buildClashDNS(proxySettings, true, true);
-    const { rules, ruleProviders } = buildClashRoutingRules(proxySettings);
-    config.rules = rules;
-    config['rule-providers'] = ruleProviders;
-    const selector = config['proxy-groups'][0];
-    const warpUrlTest = config['proxy-groups'][1];
-    selector.proxies = ['💦 Warp - Best Ping 🚀', '💦 WoW - Best Ping 🚀'];
-    warpUrlTest.name = '💦 Warp - Best Ping 🚀';
-    warpUrlTest.interval = +proxySettings.bestWarpInterval;
-    config['proxy-groups'].push(structuredClone(warpUrlTest));
-    const WoWUrlTest = config['proxy-groups'][2];
-    WoWUrlTest.name = '💦 WoW - Best Ping 🚀';
-    let warpRemarks = [], WoWRemarks = [];
-
-    warpEndpoints.split(',').forEach((endpoint, index) => {
-        const warpRemark = `💦 ${index + 1} - Warp 🇮🇷`;
-        const WoWRemark = `💦 ${index + 1} - WoW 🌍`;
-        const warpOutbound = buildClashWarpOutbound(warpConfigs, warpRemark, endpoint, '');
-        const WoWOutbound = buildClashWarpOutbound(warpConfigs, WoWRemark, endpoint, warpRemark);
-        config.proxies.push(WoWOutbound, warpOutbound);
-        warpRemarks.push(warpRemark);
-        WoWRemarks.push(WoWRemark);
-        warpUrlTest.proxies.push(warpRemark);
-        WoWUrlTest.proxies.push(WoWRemark);
-    });
-
-    selector.proxies.push(...warpRemarks, ...WoWRemarks);
-    return new Response(JSON.stringify(config, null, 4), {
-        status: 200,
-        headers: {
-            'Content-Type': 'text/plain;charset=utf-8',
-            'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-            'CDN-Cache-Control': 'no-store'
-        }
-    });
 }
 
 export async function getClashNormalConfig(request, env) {

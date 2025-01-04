@@ -14,9 +14,6 @@ export async function getDataset(request, env) {
 
     if (!proxySettings) {
         proxySettings = await updateDataset(request, env);
-        const { error, configs } = await fetchWarpConfigs(env, proxySettings);
-        if (error) throw new Error(`An error occurred while getting Warp configs - ${error}`);
-        warpConfigs = configs;
     }
 
     if (globalThis.panelVersion !== proxySettings.panelVersion) proxySettings = await updateDataset(request, env);

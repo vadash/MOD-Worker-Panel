@@ -433,56 +433,6 @@ function buildSingBoxTrojanOutbound(proxySettings, remark, address, port, host, 
     return outbound;
 }
 
-function buildSingBoxWarpOutbound(proxySettings, warpConfigs, remark, endpoint, chain, client) {
-    const ipv6Regex = /\[(.*?)\]/;
-    const portRegex = /[^:]*$/;
-    const endpointServer = endpoint.includes('[') ? endpoint.match(ipv6Regex)[1] : endpoint.split(':')[0];
-    const endpointPort = endpoint.includes('[') ? +endpoint.match(portRegex)[0] : +endpoint.split(':')[1];
-    const {
-        warpEnableIPv6,
-        hiddifyNoiseMode,
-        noiseCountMin,
-        noiseCountMax,
-        noiseSizeMin,
-        noiseSizeMax,
-        noiseDelayMin,
-        noiseDelayMax
-    } = proxySettings;
-
-    const {
-        warpIPv6,
-        reserved,
-        publicKey,
-        privateKey
-    } = extractWireguardParams(warpConfigs, chain);
-
-    const outbound = {
-        local_address: [
-            "172.16.0.2/32",
-            warpIPv6
-        ],
-        mtu: 1280,
-        peer_public_key: publicKey,
-        private_key: privateKey,
-        reserved: reserved,
-        server: endpointServer,
-        server_port: endpointPort,
-        domain_strategy: warpEnableIPv6 ? "prefer_ipv4" : "ipv4_only",
-        type: "wireguard",
-        detour: chain,
-        tag: remark
-    };
-
-    client === 'hiddify' && Object.assign(outbound, {
-        fake_packets_mode: hiddifyNoiseMode,
-        fake_packets: noiseCountMin === noiseCountMax ? noiseCountMin : `${noiseCountMin}-${noiseCountMax}`,
-        fake_packets_size: noiseSizeMin === noiseSizeMax ? noiseSizeMin : `${noiseSizeMin}-${noiseSizeMax}`,
-        fake_packets_delay: noiseDelayMin === noiseDelayMax ? noiseDelayMin : `${noiseDelayMin}-${noiseDelayMax}`
-    });
-
-    return outbound;
-}
-
 function buildSingBoxChainOutbound(chainProxyParams, enableIPv6) {
     if (["socks", "http"].includes(chainProxyParams.protocol)) {
         const { protocol, server, port, user, pass } = chainProxyParams;
@@ -569,52 +519,6 @@ function buildSingBoxChainOutbound(chainProxyParams, enableIPv6) {
     };
 
     return chainOutbound;
-}
-
-export async function getSingBoxWarpConfig(request, env, client) {
-    const { proxySettings, warpConfigs } = await getDataset(request, env);
-    const { warpEndpoints } = proxySettings;
-    const config = structuredClone(singboxConfigTemp);
-    const proIndicator = client === 'hiddify' ? ' Pro ' : ' ';
-    const dnsObject = buildSingBoxDNS(proxySettings, undefined, true, `💦 Warp${proIndicator}- Best Ping 🚀`);
-    const { rules, rule_set } = buildSingBoxRoutingRules(proxySettings);
-    config.dns.servers = dnsObject.servers;
-    config.dns.rules = dnsObject.rules;
-    if (dnsObject.fakeip) config.dns.fakeip = dnsObject.fakeip;
-    config.route.rules = rules;
-    config.route.rule_set = rule_set;
-    const selector = config.outbounds[0];
-    const warpUrlTest = config.outbounds[1];
-    selector.outbounds = [`💦 Warp${proIndicator}- Best Ping 🚀`, `💦 WoW${proIndicator}- Best Ping 🚀`];
-    config.outbounds.splice(2, 0, structuredClone(warpUrlTest));
-    const WoWUrlTest = config.outbounds[2];
-    warpUrlTest.tag = `💦 Warp${proIndicator}- Best Ping 🚀`;
-    warpUrlTest.interval = `${proxySettings.bestWarpInterval}s`;
-    WoWUrlTest.tag = `💦 WoW${proIndicator}- Best Ping 🚀`;
-    WoWUrlTest.interval = `${proxySettings.bestWarpInterval}s`;
-    const warpRemarks = [], WoWRemarks = [];
-
-    warpEndpoints.split(',').forEach((endpoint, index) => {
-        const warpRemark = `💦 ${index + 1} - Warp 🇮🇷`;
-        const WoWRemark = `💦 ${index + 1} - WoW 🌍`;
-        const warpOutbound = buildSingBoxWarpOutbound(proxySettings, warpConfigs, warpRemark, endpoint, '', client);
-        const WoWOutbound = buildSingBoxWarpOutbound(proxySettings, warpConfigs, WoWRemark, endpoint, warpRemark, client);
-        config.outbounds.push(WoWOutbound, warpOutbound);
-        warpRemarks.push(warpRemark);
-        WoWRemarks.push(WoWRemark);
-        warpUrlTest.outbounds.push(warpRemark);
-        WoWUrlTest.outbounds.push(WoWRemark);
-    });
-
-    selector.outbounds.push(...warpRemarks, ...WoWRemarks);
-    return new Response(JSON.stringify(config, null, 4), {
-        status: 200,
-        headers: {
-            'Content-Type': 'text/plain;charset=utf-8',
-            'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-            'CDN-Cache-Control': 'no-store'
-        }
-    });
 }
 
 export async function getSingBoxCustomConfig(request, env, isFragment) {
