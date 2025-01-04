@@ -2,6 +2,20 @@ import { default as JsConfuser } from 'js-confuser';
 import { readFileSync, writeFileSync } from 'fs';
 import { stringLiteral } from '@babel/types';
 
+// identifierGenerator generation. 1 number out of all must be > 1
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+const numbers = [];
+for (let i = 0; i < 5; i++) {
+  numbers.push(getRandomInt(0, 3));
+}
+if (!numbers.some(num => num > 0)) {
+  const randomIndex = getRandomInt(0, 4);
+  numbers[randomIndex] = getRandomInt(1, 3);
+}
+const [ig1, ig2, ig3, ig4, ig5] = numbers;
+
 // XOR and SHIFT key generation. Better pick prime numbers for more random output
 function sieveOfEratosthenes(min, max) {
   var primes = [];
@@ -21,26 +35,12 @@ function sieveOfEratosthenes(min, max) {
   }
   return primes;
 }
-var BASE_KEY = 128 + Math.floor(Math.random() * 128)
+var BASE_KEY = getRandomInt(128, 256)
 var PRIMES = sieveOfEratosthenes(1, BASE_KEY);
 var getRandomPrime = () => PRIMES[Math.floor(Math.random() * PRIMES.length)];
 var SHIFT_KEY = getRandomPrime();
 var XOR_KEY = getRandomPrime();
 console.log("Using XOR_KEY: " + XOR_KEY + " with SHIFT_KEY: " + SHIFT_KEY + " with BASE_KEY:" + BASE_KEY);
-
-// identifierGenerator generation. 1 number out of all must be > 1
-function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-const numbers = [];
-for (let i = 0; i < 5; i++) {
-  numbers.push(getRandomInt(0, 3));
-}
-if (!numbers.some(num => num > 0)) {
-  const randomIndex = getRandomInt(0, 4);
-  numbers[randomIndex] = getRandomInt(1, 3);
-}
-const [ig1, ig2, ig3, ig4, ig5] = numbers;
 
 // Read input code
 var sourceCode = readFileSync('output/_worker.js', 'utf8');
