@@ -4,7 +4,7 @@ import { readFileSync, writeFileSync } from 'fs';
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
-var BASE_KEY = 128;
+var BASE_KEY = 128; // use 256*256 base if you want to keep unicode
 var SHIFT_KEY = getRandomInt(1, BASE_KEY);
 var XOR_KEY = getRandomInt(1, BASE_KEY);
 console.log("Using XOR_KEY: " + XOR_KEY + " with SHIFT_KEY: " + SHIFT_KEY + " with BASE_KEY:" + BASE_KEY);
@@ -18,7 +18,7 @@ var options = {
 
   // ANTISIG, always ON
   stringConcealing: (str) => {
-    const sensitiveWords = [
+    const sensitiveWords = [ // Sensitive words to be concealed from cloudflare
       'vless', 'trojan', 'warp', 'hiddify',
       'sing', 'bpb', 'edge', 'tunnel',
       'epeius', 'cmliu', 'v2ray', 'vpn'
@@ -28,11 +28,10 @@ var options = {
   renameVariables: true,
   renameGlobals: true,
   renameLabels: true,
-  identifierGenerator: "mangled",
+  identifierGenerator: "mangled", // Takes the less space
 
-  customStringEncodings: [
+  customStringEncodings: [ // Custom encode/decode optimized for speed and protect against automatic deobfuscation
     {
-      // Custom decoder function
       code: `
     function {fnName}(str) {
         return str.split('')
@@ -44,13 +43,12 @@ var options = {
             })
             .join('');
     }`,
-      // Custom encoder function (hardcoded)
       encode: (str) => {
         return str
           .split('')
           .map((char) => {
             var code = char.charCodeAt(0);
-            if (code > 127) return '';
+            if (code > 127) return ''; // Remove unicode
             code = code ^ XOR_KEY;            
             code = (code + SHIFT_KEY) % BASE_KEY;
             return String.fromCharCode(code);
@@ -66,24 +64,24 @@ var options = {
   compact: true,
   hexadecimalNumbers: true,
   astScrambler: true,
-  calculator: false,
-  deadCode: false,
+  calculator: false, // no need for our job
+  deadCode: false, // no need for our job
 
   // OPTIONAL
   dispatcher: false,
   duplicateLiteralsRemoval: false,
   flatten: false,
-  preserveFunctionLength: false,
+  preserveFunctionLength: false, // if you have problems with code working try to enable this
   stringSplitting: false,
 
-  // SLOW
+  // SLOW, cant afford on free CF plan with 10 ms CPU
   globalConcealing: false,
   opaquePredicates: false,
   shuffle: false,
   variableMasking: false,
   stringCompression: false,
 
-  // BUGS out CF
+  // BUGS out CF (doesnt support eval or triggers CF antivirus)
   controlFlowFlattening: false, // BUGS OUT
   minify: false, // FUCKS CSS
   rgf: false, // BUGS OUT
