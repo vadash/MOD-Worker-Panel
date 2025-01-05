@@ -84,10 +84,14 @@ while ($successfulBuilds -lt $howManyToBuild) {
             New-Item -ItemType Directory -Path $zipsDirectory
         }
 
-        # max compression
-        #& $sevenZipPath a -tzip -mx=9 -mm=Deflate -mfb=258 -mpass=15 "$zipsDirectory\$zipFileName" ".\output\_worker.js"
-        # no compression
-        & $sevenZipPath a -tzip -mx=0 "$zipsDirectory\$zipFileName" ".\output\_worker.js"
+        # Compression based on number of builds
+        if ($howManyToBuild -le 10) {
+            # max compression for personal use
+            & $sevenZipPath a -tzip -mx=9 -mm=Deflate -mfb=258 -mpass=15 "$zipsDirectory\$zipFileName" ".\output\_worker.js"
+        } else {
+            # no compression (can pack better)
+            & $sevenZipPath a -tzip -mx=0 "$zipsDirectory\$zipFileName" ".\output\_worker.js"
+        }
 
         # Increment successful builds counter only after everything succeeds
         $successfulBuilds++
