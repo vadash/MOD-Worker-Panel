@@ -88,7 +88,7 @@ export async function renderHomePage(proxySettings, isPassSet) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta name="timestamp" content=${Date.now()}>
-        <title>BPB Panel ${globalThis.panelVersion}</title>
+        <title>MOD Panel ${globalThis.panelVersion}</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
         <title>Collapsible Sections</title>
@@ -386,7 +386,7 @@ export async function renderHomePage(proxySettings, isPassSet) {
         </style>
     </head>
     <body>
-        <h1>BPB Panel <span style="font-size: smaller;">${globalThis.panelVersion}</span> 💦</h1>
+        <h1>MOD Panel <span style="font-size: smaller;">${globalThis.panelVersion}</span> 💦</h1>
         <div class="form-container">
             <form id="configForm">
                 <details open>
@@ -578,8 +578,8 @@ export async function renderHomePage(proxySettings, isPassSet) {
                             ${supportedApps(['v2rayNG', 'NikaNG', 'MahsaNG', 'v2rayN', 'v2rayN-PRO', 'Shadowrocket', 'Streisand', 'Hiddify', 'Nekoray (Xray)'])}
                         </td>
                         <td>
-                            ${subQR('sub', '', 'BPB-Normal', 'Normal Subscription')}
-                            ${subURL('sub', '', 'BPB-Normal')}
+                            ${subQR('sub', '', 'MOD-Normal', 'Normal Subscription')}
+                            ${subURL('sub', '', 'MOD-Normal')}
                         </td>
                     </tr>
                     <tr>
@@ -587,7 +587,7 @@ export async function renderHomePage(proxySettings, isPassSet) {
                             ${supportedApps(['husi', 'Nekobox', 'Nekoray (sing-Box)', 'Karing'])}
                         </td>
                         <td>
-                            ${subURL('sub', 'singbox', 'BPB-Normal')}
+                            ${subURL('sub', 'singbox', 'MOD-Normal')}
                         </td>
                     </tr>
                 </table>
@@ -604,8 +604,8 @@ export async function renderHomePage(proxySettings, isPassSet) {
                             ${supportedApps(['v2rayNG', 'NikaNG', 'MahsaNG', 'v2rayN', 'v2rayN-PRO', 'Streisand'])}
                         </td>
                         <td>
-                            ${subQR('sub', 'xray', 'BPB-Full-Normal', 'Full normal Subscription')}
-                            ${subURL('sub', 'xray', 'BPB-Full-Normal')}
+                            ${subQR('sub', 'xray', 'MOD-Full-Normal', 'Full normal Subscription')}
+                            ${subURL('sub', 'xray', 'MOD-Full-Normal')}
                         </td>
                     </tr>
                     <tr>
@@ -613,8 +613,8 @@ export async function renderHomePage(proxySettings, isPassSet) {
                             ${supportedApps(['sing-box', 'v2rayN (sing-box)'])}
                         </td>
                         <td>
-                            ${subQR('sub', 'sfa', 'BPB-Full-Normal', 'Full normal Subscription', true)}
-                            ${subURL('sub', 'sfa', 'BPB-Full-Normal')}
+                            ${subQR('sub', 'sfa', 'MOD-Full-Normal', 'Full normal Subscription', true)}
+                            ${subURL('sub', 'sfa', 'MOD-Full-Normal')}
                         </td>
                     </tr>
                     <tr>
@@ -622,8 +622,8 @@ export async function renderHomePage(proxySettings, isPassSet) {
                             ${supportedApps(['Clash Meta', 'Clash Verge', 'FlClash', 'Stash', 'v2rayN (mihomo)'])}
                         </td>
                         <td>
-                            ${subQR('sub', 'clash', 'BPB-Full-Normal', 'Full normal Subscription')}
-                            ${subURL('sub', 'clash', 'BPB-Full-Normal')}
+                            ${subQR('sub', 'clash', 'MOD-Full-Normal', 'Full normal Subscription')}
+                            ${subURL('sub', 'clash', 'MOD-Full-Normal')}
                         </td>
                     </tr>
                 </table>
@@ -640,8 +640,8 @@ export async function renderHomePage(proxySettings, isPassSet) {
                             ${supportedApps(['v2rayNG', 'NikaNG', 'MahsaNG', 'v2rayN', 'v2rayN-PRO', 'Streisand'])}
                         </td>
                         <td>
-                            ${subQR('fragsub', '', 'BPB-Fragment', 'Fragment Subscription')}
-                            ${subURL('fragsub', '', 'BPB-Fragment')}
+                            ${subQR('fragsub', '', 'MOD-Fragment', 'Fragment Subscription')}
+                            ${subURL('fragsub', '', 'MOD-Fragment')}
                         </td>
                     </tr>
                     <tr>
@@ -649,8 +649,8 @@ export async function renderHomePage(proxySettings, isPassSet) {
                             ${supportedApps(['Hiddify'])}
                         </td>
                         <td>
-                            ${subQR('fragsub', 'hiddify', 'BPB-Fragment', 'Fragment Subscription')}
-                            ${subURL('fragsub', 'hiddify', 'BPB-Fragment')}
+                            ${subQR('fragsub', 'hiddify', 'MOD-Fragment', 'Fragment Subscription')}
+                            ${subURL('fragsub', 'hiddify', 'MOD-Fragment')}
                         </td>
                     </tr>
                 </table>
