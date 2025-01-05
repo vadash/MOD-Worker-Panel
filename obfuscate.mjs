@@ -5,8 +5,8 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 var BASE_KEY = 128;
-var SHIFT_KEY = getRandomInt(1, 128);
-var XOR_KEY = getRandomInt(1, 128);
+var SHIFT_KEY = getRandomInt(1, BASE_KEY);
+var XOR_KEY = getRandomInt(1, BASE_KEY);
 console.log("Using XOR_KEY: " + XOR_KEY + " with SHIFT_KEY: " + SHIFT_KEY + " with BASE_KEY:" + BASE_KEY);
 
 // Read input code
@@ -17,14 +17,11 @@ var options = {
   target: 'node',
 
   // ANTISIG, always ON
-  stringSplitting: true,
   stringConcealing: true,
   renameVariables: true,
   renameGlobals: true,
   renameLabels: true,
-  identifierGenerator: {
-    mangled: 1,
-  },
+  identifierGenerator: "mangled",
 
   customStringEncodings: [
     {
@@ -70,6 +67,7 @@ var options = {
   duplicateLiteralsRemoval: false,
   flatten: false,
   preserveFunctionLength: false,
+  stringSplitting: false,
 
   // SLOW
   globalConcealing: false,
