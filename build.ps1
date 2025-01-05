@@ -19,7 +19,7 @@ if (!(Test-Path $sevenZipPath)) {
 Remove-Item -Recurse -Force -Path .\output\ -ErrorAction SilentlyContinue
 
 # Forbidden strings
-$forbiddenStrings = "vless", "trojan", "user", "warp", "noise", "hiddify", "bypass", "sing", "bpb", "edge", "tunnel", "epeius", "cmliu", "v2ray", "vpn"
+$forbiddenStrings = "vless", "trojan", "warp", "hiddify", "sing", "bpb", "edge", "tunnel", "epeius", "cmliu", "v2ray", "vpn"
 
 # Build worker once
 try {

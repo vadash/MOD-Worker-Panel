@@ -17,7 +17,14 @@ var options = {
   target: 'node',
 
   // ANTISIG, always ON
-  stringConcealing: true,
+  stringConcealing: (str) => {
+    const sensitiveWords = [
+      'vless', 'trojan', 'warp', 'hiddify',
+      'sing', 'bpb', 'edge', 'tunnel',
+      'epeius', 'cmliu', 'v2ray', 'vpn'
+    ];
+    return sensitiveWords.some(word => str.toLowerCase().includes(word));
+  },
   renameVariables: true,
   renameGlobals: true,
   renameLabels: true,
@@ -31,8 +38,8 @@ var options = {
         return str.split('')
             .map(char => {
                 var code = char.charCodeAt(0);
-                code = code ^ ${XOR_KEY};
                 code = (code - ${SHIFT_KEY} + ${BASE_KEY}) % ${BASE_KEY};
+                code = code ^ ${XOR_KEY};                
                 return String.fromCharCode(code);
             })
             .join('');
@@ -44,8 +51,8 @@ var options = {
           .map((char) => {
             var code = char.charCodeAt(0);
             if (code > 127) return '';
+            code = code ^ XOR_KEY;            
             code = (code + SHIFT_KEY) % BASE_KEY;
-            code = code ^ XOR_KEY;
             return String.fromCharCode(code);
           })
           .join('');
