@@ -10,7 +10,7 @@ export function initializeParams(request, env) {
     globalThis.userID = env.ID;
     globalThis.trojanPassword = env.PASS;
     globalThis.trojanHash = env.HASH;
-    globalThis.proxyIP = proxyIPs ? proxyIPs[Math.floor(Math.random() * proxyIPs.length)] : 'bpb.yousef.isegaro.com';
+    globalThis.proxyIP = proxyIPs ? proxyIPs[Math.floor(Math.random() * proxyIPs.length)] : '';
     globalThis.hostName = request.headers.get('Host');
     globalThis.pathName = url.pathname;
     globalThis.client = searchParams.get('app');
