@@ -55,6 +55,7 @@ export async function renderLoginPage() {
                 font-size: 14px;
                 background-color: var(--input-background-color);
                 color: var(--text-color);
+                box-sizing: border-box; /* Include padding and border in the element's total width */
             }
             button {
                 width: 100%;
@@ -119,7 +120,8 @@ export async function renderLoginPage() {
             });
         </script>
     </body>
-    </html>`;
+    </html>
+    `;
 
     return new Response(loginPage, {
         status: 200,
