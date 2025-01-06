@@ -406,7 +406,7 @@ async function vlessRemoteSocketToWS(remoteSocket, webSocket, vlessResponseHeade
                  */
                 async write(chunk, controller) {
                     hasIncomingData = true;
-                    remoteChunkCount++;
+                    // remoteChunkCount++;
                     if (webSocket.readyState !== WS_READY_STATE_OPEN) {
                         controller.error("webSocket.readyState is not open, maybe close");
                     }
@@ -414,15 +414,11 @@ async function vlessRemoteSocketToWS(remoteSocket, webSocket, vlessResponseHeade
                         webSocket.send(await new Blob([vlessHeader, chunk]).arrayBuffer());
                         vlessHeader = null;
                     } else {
-                        // Progressive rate limiting
-                        if (remoteChunkCount > 10000) {
-                            // Calculate delay: 1ms per 1000 chunks above 10k, max 10ms
-                            const extraChunks = remoteChunkCount - 10000;
-                            const delayMs = Math.min(Math.floor(extraChunks / 1000), 10);
-                            if (delayMs > 0) {
-                                await delay(delayMs);
-                            }
-                        }
+                        // seems no need rate limit this, CF seems fix this??..
+                        // if (remoteChunkCount > 20000) {
+                        // 	// cf one package is 4096 byte(4kb),  4096 * 20000 = 80M
+                        // 	await delay(1);
+                        // }
                         webSocket.send(chunk);
                     }
                 },
