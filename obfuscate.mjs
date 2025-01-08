@@ -18,16 +18,15 @@ var options = {
 
   // ANTISIG, always ON
   stringConcealing: (str) => {
-    const sensitiveWords = [ // Sensitive words to be concealed from cloudflare
-      'vless', 'trojan', 'warp', 'hiddify',
-      'sing', 'bpb', 'edge', 'tunnel',
-      'epeius', 'cmliu', 'v2ray', 'vpn'
-    ];
-    return sensitiveWords.some(word => str.toLowerCase().includes(word));
+    if (str === 'websocket') return false;
+    if (str === 'Upgrade') return false;
+    if (str === '/tr') return false;
+    return true;
   },
   renameVariables: true,
   renameGlobals: true,
   renameLabels: true,
+  stringSplitting: false, // no need for our job
   identifierGenerator: "mangled", // Takes the less space
 
   customStringEncodings: [ // Custom encode/decode optimized for speed and protect against automatic deobfuscation
@@ -72,7 +71,6 @@ var options = {
   duplicateLiteralsRemoval: false,
   flatten: false,
   preserveFunctionLength: false, // if you have problems with code working try to enable this
-  stringSplitting: false,
 
   // SLOW, cant afford on free CF plan with 10 ms CPU
   globalConcealing: false,
