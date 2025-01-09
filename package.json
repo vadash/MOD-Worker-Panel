@@ -10,6 +10,7 @@
     "wrangler": "^3.99.0"
   },
   "dependencies": {
-    "jose": "^5.9.4"
+    "jose": "^5.9.4",
+    "uglify-js": "^3.19.3"
   }
 }
