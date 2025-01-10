@@ -376,7 +376,7 @@ export async function renderHomePage(proxySettings, isPassSet) {
         <div class="form-container">
             <form id="configForm">
                 <details open>
-                    <summary><h2>VLЕSS - TRОJAN ⚙️</h2></summary>
+                    <summary><h2>VELSS - TRJOAN ⚙️</h2></summary>
                     <div class="form-control">
                         <label for="remoteDNS">🌏 Remote DNS</label>
                         <input type="url" id="remoteDNS" name="remoteDNS" value="${remoteDNS}" required>
