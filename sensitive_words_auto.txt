@@ -5,3 +5,5 @@ bpb
 cmliu
 vless
 trojan
+vpn
+proxy
