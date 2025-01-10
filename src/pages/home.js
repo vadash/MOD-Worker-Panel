@@ -19,19 +19,6 @@ export async function renderHomePage(proxySettings, isPassSet) {
         intervalMin,
         intervalMax,
         fragmentPackets,
-        warpEndpoints,
-        warpFakeDNS,
-        warpEnableIPv6,
-        warpPlusLicense,
-        bestWarpInterval,
-        hiddifyNoiseMode,
-        nikaNGNoiseMode,
-        noiseCountMin,
-        noiseCountMax,
-        noiseSizeMin,
-        noiseSizeMax,
-        noiseDelayMin,
-        noiseDelayMax,
         bypassLAN,
         bypassIran,
         bypassChina,
@@ -43,7 +30,6 @@ export async function renderHomePage(proxySettings, isPassSet) {
         customBlockRules
     } = proxySettings;
 
-    const isWarpPlus = warpPlusLicense ? true : false;
     const activeProtocols = (vlessConfigs ? 1 : 0) + (trojanConfigs ? 1 : 0);
     let httpPortsBlock = '', httpsPortsBlock = '';
     const allPorts = [...(globalThis.hostName.includes('workers.dev') ? globalThis.defaultHttpPorts : []), ...globalThis.defaultHttpsPorts];
@@ -390,7 +376,7 @@ export async function renderHomePage(proxySettings, isPassSet) {
         <div class="form-container">
             <form id="configForm">
                 <details open>
-                    <summary><h2>VLESS - TROJAN ⚙️</h2></summary>
+                    <summary><h2>VLЕSS - TRОJAN ⚙️</h2></summary>
                     <div class="form-control">
                         <label for="remoteDNS">🌏 Remote DNS</label>
                         <input type="url" id="remoteDNS" name="remoteDNS" value="${remoteDNS}" required>
