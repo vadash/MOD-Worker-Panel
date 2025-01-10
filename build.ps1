@@ -124,13 +124,14 @@ function Replace-ForbiddenStrings {
 
     $forbiddenReplacements = @{}
     foreach ($forbiddenString in $forbiddenStrings) {
-        # Generate a unique random hex string
+        # Generate a unique random identifier starting with letter followed by hex
         do {
-            $length = Get-Random -Minimum 2 -Maximum 5
+            $randomLetter = [char](Get-Random -Minimum 97 -Maximum 123) # a-z
+            $length = Get-Random -Minimum 1 -Maximum 2
             $randomHex = -join ((48..57) + (97..102) | Get-Random -Count $length | ForEach-Object {[char]$_})
-        } while (!$usedHexValues.Add($randomHex)) # Keep trying until we get a unique value
-
-        $forbiddenReplacements[$forbiddenString] = "var_$randomHex"
+            $identifier = "$randomLetter$randomHex"
+        } while (!$usedHexValues.Add($identifier))
+        $forbiddenReplacements[$forbiddenString] = $identifier
     }
 
     $jsContent = Get-Content -Path $workerPath -Raw
