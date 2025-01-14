@@ -663,8 +663,7 @@ const singboxConfigTemp = {
             type: "tun",
             tag: "tun-in",
             address: [
-                "172.18.0.1/28",
-                "fdfe:dcba:9876::1/126"
+                "10.10.10.9/28"
             ],
             mtu: 9000,
             auto_route: true,
