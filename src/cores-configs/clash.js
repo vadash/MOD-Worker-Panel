@@ -2,15 +2,13 @@ import { getConfigAddresses, extractWireguardParams, generateRemark, randomUpper
 import { getDataset } from '../kv/handlers';
 import { isDomain } from '../helpers/helpers';
 
-async function buildClashDNS(proxySettings, isChain, isWarp) {
+async function buildClashDNS(proxySettings, isChain) {
     const {
         remoteDNS,
         localDNS,
         vlessTrojanFakeDNS,
         outProxyParams,
         enableIPv6,
-        warpFakeDNS,
-        warpEnableIPv6,
         bypassIran,
         bypassChina,
         bypassRussia,
@@ -18,11 +16,8 @@ async function buildClashDNS(proxySettings, isChain, isWarp) {
         customBlockRules
     } = proxySettings;
 
-    const warpRemoteDNS = warpEnableIPv6
-        ? ["1.1.1.1", "1.0.0.1", "[2606:4700:4700::1111]", "[2606:4700:4700::1001]"]
-        : ["1.1.1.1", "1.0.0.1"];
-    const isFakeDNS = (vlessTrojanFakeDNS && !isWarp) || (warpFakeDNS && isWarp);
-    const isIPv6 = (enableIPv6 && !isWarp) || (warpEnableIPv6 && isWarp);
+    const isFakeDNS = vlessTrojanFakeDNS;
+    const isIPv6 = enableIPv6;
     const customBypassRulesDomains = customBypassRules.split(',').filter(address => isDomain(address));
     const isBypass = bypassIran || bypassChina || bypassRussia;
     const bypassRules = [
@@ -38,9 +33,7 @@ async function buildClashDNS(proxySettings, isChain, isWarp) {
         "respect-rules": true,
         "use-hosts": true,
         "use-system-hosts": false,
-        "nameserver": isWarp
-            ? warpRemoteDNS.map(dns => isChain ? `${dns}#💦 Warp - Best Ping 🚀` : `${dns}#✅ Selector`)
-            : [isChain ? `${remoteDNS}#proxy-1` : `${remoteDNS}#✅ Selector`],
+        "nameserver": [isChain ? `${remoteDNS}#proxy-1` : `${remoteDNS}#✅ Selector`],
         "proxy-server-nameserver": [`${localDNS}#DIRECT`]
     };
 
@@ -426,7 +419,7 @@ export async function getClashNormalConfig(request, env) {
         delete config.hosts;
     }
     const { rules, ruleProviders } = buildClashRoutingRules(proxySettings);
-    config.dns = await buildClashDNS(proxySettings, chainProxy, false);
+    config.dns = await buildClashDNS(proxySettings, chainProxy);
     config.rules = rules;
     config['rule-providers'] = ruleProviders;
     const selector = config['proxy-groups'][0];
