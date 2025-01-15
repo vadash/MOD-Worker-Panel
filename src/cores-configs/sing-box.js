@@ -2,14 +2,12 @@ import { getConfigAddresses, extractWireguardParams, generateRemark, randomUpper
 import { getDataset } from '../kv/handlers';
 import { isDomain } from '../helpers/helpers';
 
-function buildSingBoxDNS(proxySettings, outboundAddrs, isWarp, remoteDNSDetour) {
+function buildSingBoxDNS(proxySettings, outboundAddrs, remoteDNSDetour) {
     const {
         remoteDNS,
         localDNS,
         vlessTrojanFakeDNS,
         enableIPv6,
-        warpFakeDNS,
-        warpEnableIPv6,
         bypassIran,
         bypassChina,
         bypassRussia,
@@ -20,8 +18,8 @@ function buildSingBoxDNS(proxySettings, outboundAddrs, isWarp, remoteDNSDetour) 
     } = proxySettings;
 
     let fakeip;
-    const isFakeDNS = (vlessTrojanFakeDNS && !isWarp) || (warpFakeDNS && isWarp);
-    const isIPv6 = (enableIPv6 && !isWarp) || (warpEnableIPv6 && isWarp);
+    const isFakeDNS = vlessTrojanFakeDNS;
+    const isIPv6 = enableIPv6;
     const customBypassRulesDomains = customBypassRules.split(',').filter(address => isDomain(address));
     const customBlockRulesDomains = customBlockRules.split(',').filter(address => isDomain(address));
     const geoRules = [
@@ -36,7 +34,7 @@ function buildSingBoxDNS(proxySettings, outboundAddrs, isWarp, remoteDNSDetour) 
     ];
     const servers = [
         {
-            address: isWarp ? "1.1.1.1" : remoteDNS,
+            address: remoteDNS,
             address_resolver: "dns-direct",
             strategy: isIPv6 ? "prefer_ipv4" : "ipv4_only",
             detour: remoteDNSDetour,
@@ -54,20 +52,12 @@ function buildSingBoxDNS(proxySettings, outboundAddrs, isWarp, remoteDNSDetour) 
         }
     ];
 
-    let outboundRule;
-    if (isWarp) {
-        outboundRule = {
-            outbound: "any",
-            server: "dns-direct"
-        };
-    } else {
-        const outboundDomains = outboundAddrs.filter(address => isDomain(address));
-        const uniqueDomains = [...new Set(outboundDomains)];
-        outboundRule = {
-            domain: uniqueDomains,
-            server: "dns-direct"
-        };
-    }
+    const outboundDomains = outboundAddrs.filter(address => isDomain(address));
+    const uniqueDomains = [...new Set(outboundDomains)];
+    const outboundRule = {
+        domain: uniqueDomains,
+        server: "dns-direct"
+    };
 
     const rules = [
         outboundRule,
@@ -557,7 +547,7 @@ export async function getSingBoxCustomConfig(request, env, isFragment) {
     const customCdnAddresses = customCdnAddrs ? customCdnAddrs.split(',') : [];
     const totalAddresses = [...Addresses, ...customCdnAddresses];
     const config = structuredClone(singboxConfigTemp);
-    const dnsObject = buildSingBoxDNS(proxySettings, totalAddresses, false, chainProxy ? 'proxy-1' : '✅ Selector');
+    const dnsObject = buildSingBoxDNS(proxySettings, totalAddresses, chainProxy ? 'proxy-1' : '✅ Selector');
     const { rules, rule_set } = buildSingBoxRoutingRules(proxySettings);
     config.dns.servers = dnsObject.servers;
     config.dns.rules = dnsObject.rules;
