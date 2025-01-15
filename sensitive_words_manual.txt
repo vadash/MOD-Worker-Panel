@@ -36,8 +36,8 @@ openQR
 applySettings
 invalidIPs
 copyToClipboard
-modal
-applyButton
+#modal#
+#applyButton#
 validTransmission
 validIPDomain
 checkedPorts
@@ -55,9 +55,8 @@ isSocksHttp
 hasSecurity
 securityRegex
 validSecurityType
-chainProxy
+#chainProxy#
 securityType
-#RESERVED_STUFF#
 #textarea#
 #resetSettings#
 #formData#
