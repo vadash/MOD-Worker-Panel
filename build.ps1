@@ -94,16 +94,21 @@ function Build-Worker {
         # Rename worker
         Rename-Item -Path ".\output\worker.js" -NewName "_worker.js"
 
+        # Remove console logging
+        $workerContent = Get-Content -Path $workerPath
+        $cleanedContent = $workerContent | Where-Object { $_ -notmatch 'console.*(?:log|error)' }
+        Set-Content -Path $workerPath -Value $cleanedContent
+
         # Remove debug code (__name functions)
         Replace-NameCalls -workerPath $workerPath
-
-        # Remove comments from worker
-        npx uglify-js $workerPath -o $workerPath --compress --mangle -O keep_quoted_props
 
         # Remove Unicode symbols
         $workerContent = Get-Content -Path $workerPath -Raw
         $cleanedContent = $workerContent -replace '[^\x20-\x7E\s]', ''
         Set-Content -Path $workerPath -Value $cleanedContent
+
+        # Remove comments from worker
+        npx uglify-js $workerPath -o $workerPath --compress --mangle -O keep_quoted_props
 
         # Store the original worker content
         return Get-Content -Path $workerPath -Raw
