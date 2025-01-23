@@ -1,9 +1,3 @@
-edgetunnel
-edtunnel
-epeius
 bpb
-cmliu
 vless
 trojan
-vpn
-proxy
