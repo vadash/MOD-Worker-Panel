@@ -521,23 +521,6 @@ export async function renderHomePage(proxySettings, isPassSet) {
                 </div>
             </form>
             <hr>
-            <h2>🔗 NORMAL SUB</h2>
-            <div class="table-container">
-                <table id="normal-configs-table">
-                    <tr>
-                        <th>Application</th>
-                        <th>Subscription</th>
-                    </tr>
-                    <tr>
-                        <td>
-                            ${supportedApps(['husi', 'Nekobox', 'Nekoray (sing-Box)', 'Karing'])}
-                        </td>
-                        <td>
-                            ${subURL('sub', 'singbox', 'MOD-Normal')}
-                        </td>
-                    </tr>
-                </table>
-            </div>
             <h2>🔗 FULL NORMAL SUB</h2>
             <div class="table-container">
                 <table id="full-normal-configs-table">
@@ -547,10 +530,10 @@ export async function renderHomePage(proxySettings, isPassSet) {
                     </tr>
                     <tr>
                         <td>
-                            ${supportedApps(['sing-box', 'v2rayN (sing-box)'])}
+                            ${supportedApps(['sing-box'])}
                         </td>
                         <td>
-                            ${subURL('sub', 'sfa', 'MOD-Full-Normal')}
+                            ${subURL('sub', 'sfa', 'normal')}
                         </td>
                     </tr>
                 </table>
@@ -564,10 +547,10 @@ export async function renderHomePage(proxySettings, isPassSet) {
                     </tr>
                     <tr>
                         <td style="text-wrap: nowrap;">
-                            ${supportedApps(['Hiddify'])}
+                            ${supportedApps(['sing-box plus', 'hiddify'])}
                         </td>
                         <td>
-                            ${subURL('fragsub', 'hiddify', 'MOD-Fragment')}
+                            ${subURL('fragsub', 'hiddify', 'fragment')}
                         </td>
                     </tr>
                 </table>
