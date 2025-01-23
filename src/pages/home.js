@@ -51,13 +51,6 @@ export async function renderHomePage(proxySettings, isPassSet) {
             <span>${app}</span>
         </div>`).join('');
 
-    const subQR = (path, app, tag, title, sbType) => {
-        const url = `${sbType ? 'sing-box://import-remote-profile?url=' : ''}https://${globalThis.hostName}/${path}/${globalThis.userID}${app ? `?app=${app}` : ''}#${tag}`;
-        return `
-            <button onclick="openQR('${url}', '${title}')" style="margin-bottom: 8px;">
-                QR Code&nbsp;<span class="material-symbols-outlined">qr_code</span>
-            </button>`;
-    };
 
     const subURL = (path, app, tag) => {
         const url = `https://${globalThis.hostName}/${path}/${globalThis.userID}${app ? `?app=${app}` : ''}#${tag}`;
@@ -80,22 +73,6 @@ export async function renderHomePage(proxySettings, isPassSet) {
         <title>Collapsible Sections</title>
         <style>
             :root {
-                --color: black;
-                --primary-color: #09639f;
-                --secondary-color: #3498db;
-                --header-color: #09639f;
-                --background-color: #fff;
-                --form-background-color: #f9f9f9;
-                --table-active-color: #f2f2f2;
-                --hr-text-color: #3b3b3b;
-                --lable-text-color: #333;
-                --border-color: #ddd;
-                --button-color: #09639f;
-                --input-background-color: white;
-                --header-shadow: 2px 2px 4px rgba(0, 0, 0, 0.25);
-            }
-            body { font-family: Twemoji Country Flags, system-ui; background-color: var(--background-color); color: var(--color) }
-            body.dark-mode {
                 --color: white;
                 --primary-color: #09639F;
                 --secondary-color: #3498DB;
@@ -110,6 +87,8 @@ export async function renderHomePage(proxySettings, isPassSet) {
                 --input-background-color: #252525;
                 --header-shadow: 2px 2px 4px rgba(255, 255, 255, 0.25);
             }
+            body { font-family: Twemoji Country Flags, system-ui; background-color: var(--background-color); color: var(--color) }
+
             .material-symbols-outlined {
                 margin-left: 5px;
                 font-variation-settings:
@@ -319,17 +298,7 @@ export async function renderHomePage(proxySettings, isPassSet) {
             .form-control input[type="password"]:focus { border-color: var(--secondary-color); outline: none; }
             #passwordError { color: red; margin-bottom: 10px; }
             .symbol { margin-right: 8px; }
-            .modalQR {
-                display: none;
-                position: fixed;
-                z-index: 1;
-                left: 0;
-                top: 0;
-                width: 100%;
-                height: 100%;
-                overflow: auto;
-                background-color: rgba(0, 0, 0, 0.4);
-            }
+
             .floating-button {
                 position: fixed;
                 bottom: 20px;
@@ -349,8 +318,8 @@ export async function renderHomePage(proxySettings, isPassSet) {
             .min-max { display: grid; grid-template-columns: 1fr auto 1fr; align-items: baseline; width: 100%; }
             .min-max span { text-align: center; white-space: pre; }
             .input-with-select { width: 100%; }
-            body.dark-mode .floating-button { background-color: var(--color); }
-            body.dark-mode .floating-button:hover { transform: scale(1.1); }
+            .floating-button { background-color: var(--color); }
+            .floating-button:hover { transform: scale(1.1); }
             #ips th { background-color: var(--hr-text-color); color: var(--background-color); width: unset; }
             #ips td { background-color: unset; }
             #ips td:first-child { background-color: var(--table-active-color); }
@@ -561,15 +530,6 @@ export async function renderHomePage(proxySettings, isPassSet) {
                     </tr>
                     <tr>
                         <td>
-                            ${supportedApps(['v2rayNG', 'NikaNG', 'MahsaNG', 'v2rayN', 'v2rayN-PRO', 'Shadowrocket', 'Streisand', 'Hiddify', 'Nekoray (Xray)'])}
-                        </td>
-                        <td>
-                            ${subQR('sub', '', 'MOD-Normal', 'Normal Subscription')}
-                            ${subURL('sub', '', 'MOD-Normal')}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
                             ${supportedApps(['husi', 'Nekobox', 'Nekoray (sing-Box)', 'Karing'])}
                         </td>
                         <td>
@@ -587,29 +547,10 @@ export async function renderHomePage(proxySettings, isPassSet) {
                     </tr>
                     <tr>
                         <td>
-                            ${supportedApps(['v2rayNG', 'NikaNG', 'MahsaNG', 'v2rayN', 'v2rayN-PRO', 'Streisand'])}
-                        </td>
-                        <td>
-                            ${subQR('sub', 'xray', 'MOD-Full-Normal', 'Full normal Subscription')}
-                            ${subURL('sub', 'xray', 'MOD-Full-Normal')}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
                             ${supportedApps(['sing-box', 'v2rayN (sing-box)'])}
                         </td>
                         <td>
-                            ${subQR('sub', 'sfa', 'MOD-Full-Normal', 'Full normal Subscription', true)}
                             ${subURL('sub', 'sfa', 'MOD-Full-Normal')}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            ${supportedApps(['Clash Meta', 'Clash Verge', 'FlClash', 'Stash', 'v2rayN (mihomo)'])}
-                        </td>
-                        <td>
-                            ${subQR('sub', 'clash', 'MOD-Full-Normal', 'Full normal Subscription')}
-                            ${subURL('sub', 'clash', 'MOD-Full-Normal')}
                         </td>
                     </tr>
                 </table>
@@ -623,19 +564,9 @@ export async function renderHomePage(proxySettings, isPassSet) {
                     </tr>
                     <tr>
                         <td style="text-wrap: nowrap;">
-                            ${supportedApps(['v2rayNG', 'NikaNG', 'MahsaNG', 'v2rayN', 'v2rayN-PRO', 'Streisand'])}
-                        </td>
-                        <td>
-                            ${subQR('fragsub', '', 'MOD-Fragment', 'Fragment Subscription')}
-                            ${subURL('fragsub', '', 'MOD-Fragment')}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="text-wrap: nowrap;">
                             ${supportedApps(['Hiddify'])}
                         </td>
                         <td>
-                            ${subQR('fragsub', 'hiddify', 'MOD-Fragment', 'Fragment Subscription')}
                             ${subURL('fragsub', 'hiddify', 'MOD-Fragment')}
                         </td>
                     </tr>
@@ -643,7 +574,7 @@ export async function renderHomePage(proxySettings, isPassSet) {
             </div>
             <div id="myModal" class="modal">
                 <div class="modal-content">
-                    <span class="close">&times;</span>
+                    <span class="close">×</span>
                     <form id="passwordChangeForm">
                         <h2>Change Password</h2>
                         <div class="form-control">
@@ -659,15 +590,7 @@ export async function renderHomePage(proxySettings, isPassSet) {
                     </form>
                 </div>
             </div>
-            <div id="myQRModal" class="modalQR">
-                <div class="modal-content" style="width: auto; text-align: center;">
-                    <div style="display: flex; flex-direction: column; align-items: center; margin-bottom: 10px;">
-                        <span id="closeQRModal" class="close" style="align-self: flex-end;">&times;</span>
-                        <span id="qrcodeTitle" style="align-self: center; font-weight: bold;"></span>
-                    </div>
-                    <div id="qrcode-container"></div>
-                </div>
-            </div>
+
             <hr>
             <div class="footer">
                 <button id="openModalBtn" class="button">Change Password</button>
@@ -676,20 +599,17 @@ export async function renderHomePage(proxySettings, isPassSet) {
                 </button>
             </div>
         </div>
-        <button id="darkModeToggle" class="floating-button">
-            <i id="modeIcon" class="fa fa-2x fa-adjust" style="color: var(--background-color);" aria-hidden="true"></i>
-        </button>
+
     <script type="module" defer>
         import { polyfillCountryFlagEmojis } from "https://cdn.skypack.dev/country-flag-emoji-polyfill";
         polyfillCountryFlagEmojis();
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script>
         const defaultHttpsPorts = ['443', '8443', '2053', '2083', '2087', '2096'];
         let activePortsNo = ${ports.length};
         let activeHttpsPortsNo = ${ports.filter(port => globalThis.defaultHttpsPorts.includes(port)).length};
         let activeProtocols = ${activeProtocols};
-        localStorage.getItem('darkMode') === 'enabled' && document.body.classList.add('dark-mode');
+
 
         document.addEventListener('DOMContentLoaded', async () => {
             const configForm = document.getElementById('configForm');
@@ -698,12 +618,9 @@ export async function renderHomePage(proxySettings, isPassSet) {
             const passwordChangeForm = document.getElementById('passwordChangeForm');
             const initialFormData = new FormData(configForm);
             const modal = document.getElementById('myModal');
-            const closeQR = document.getElementById('closeQRModal');
             const resetSettings = document.getElementById('resetSettings');
-            let modalQR = document.getElementById('myQRModal');
-            let qrcodeContainer = document.getElementById('qrcode-container');
             let forcedPassChange = false;
-            const darkModeToggle = document.getElementById('darkModeToggle');
+
 
             const hasFormDataChanged = () => {
                 const currentFormData = new FormData(configForm);
@@ -747,10 +664,7 @@ export async function renderHomePage(proxySettings, isPassSet) {
                 modal.style.display = "none";
                 document.body.style.overflow = "";
             });
-            closeQR.addEventListener('click', () => {
-                modalQR.style.display = "none";
-                qrcodeContainer.lastElementChild.remove();
-            });
+
             resetSettings.addEventListener('click', async () => {
                 const confirmReset = confirm('⚠️ This will reset all panel settings.\\nAre you sure?');
                 if(!confirmReset) return;
@@ -780,16 +694,6 @@ export async function renderHomePage(proxySettings, isPassSet) {
                 } catch (error) {
                     console.error('Error:', error);
                 }
-            });
-            window.onclick = (event) => {
-                if (event.target == modalQR) {
-                    modalQR.style.display = "none";
-                    qrcodeContainer.lastElementChild.remove();
-                }
-            }
-            darkModeToggle.addEventListener('click', () => {
-                const isDarkMode = document.body.classList.toggle('dark-mode');
-                localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
             });
 
             const isPassSet = ${isPassSet};
@@ -844,26 +748,6 @@ export async function renderHomePage(proxySettings, isPassSet) {
             }
         }
 
-        const openQR = (url, title) => {
-            let qrcodeContainer = document.getElementById("qrcode-container");
-            let qrcodeTitle = document.getElementById("qrcodeTitle");
-            const modalQR = document.getElementById("myQRModal");
-            qrcodeTitle.textContent = title;
-            modalQR.style.display = "block";
-            let qrcodeDiv = document.createElement("div");
-            qrcodeDiv.className = "qrcode";
-            qrcodeDiv.style.padding = "2px";
-            qrcodeDiv.style.backgroundColor = "#ffffff";
-            new QRCode(qrcodeDiv, {
-                text: url,
-                width: 256,
-                height: 256,
-                colorDark: "#000000",
-                colorLight: "#ffffff",
-                correctLevel: QRCode.CorrectLevel.H
-            });
-            qrcodeContainer.appendChild(qrcodeDiv);
-        }
 
         const copyToClipboard = (text) => {
             const textarea = document.createElement('textarea');
