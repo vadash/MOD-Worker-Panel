@@ -6,7 +6,7 @@
 # ==================================================================
 
 # Constants
-$howManyToBuild = 10
+$howManyToBuild = 20
 $sevenZipPath = "C:\Program Files\7-Zip\7z.exe"
 $sensitiveFileAuto = ".\sensitive_words_auto.txt"
 $sensitiveFileManual = ".\sensitive_words_manual.txt"
@@ -236,7 +236,7 @@ try {
     $originalContent = Build-Worker
     $successCount = 0
     $retryCount = 0
-    $maxRetries = $howManyToBuild * 3  # Prevent infinite loops
+    $maxRetries = $howManyToBuild * 5  # Prevent infinite loops
 
     while ($successCount -lt $howManyToBuild -and $retryCount -lt $maxRetries) {
         try {
