@@ -102,9 +102,9 @@ function Build-Worker {
         # Remove debug code (__name functions)
         Replace-NameCalls -workerPath $workerPath
 
-        # Remove Unicode symbols
+        # Remove non-ASCII characters (including emojis) while preserving basic whitespace
         $workerContent = Get-Content -Path $workerPath -Raw
-        $cleanedContent = $workerContent -replace '[^\x20-\x7E\s]', ''
+        $cleanedContent = $workerContent -replace '[^\x00-\x7F]', ''
         Set-Content -Path $workerPath -Value $cleanedContent
 
         # Remove comments from worker
