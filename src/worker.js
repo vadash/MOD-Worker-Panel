@@ -3,10 +3,7 @@ import { vlessOverWSHandler } from './protocols/vless';
 import { trojanOverWSHandler } from './protocols/trojan';
 import { logout, resetPassword, login } from './authentication/auth';
 import { renderErrorPage } from './pages/error';
-import { getXrayCustomConfigs } from './cores-configs/xray';
 import { getSingBoxCustomConfig } from './cores-configs/sing-box';
-import { getClashNormalConfig } from './cores-configs/clash';
-import { getNormalConfigs } from './cores-configs/normalConfigs';
 import { getMyIP, handlePanel } from './helpers/helpers';
 
 export default {
@@ -26,15 +23,10 @@ export default {
             switch (globalThis.pathName) {
 
                 case `/sub/${globalThis.userID}`:
-                    if (globalThis.client === 'sfa') return await getSingBoxCustomConfig(request, env, false);
-                    if (globalThis.client === 'clash') return await getClashNormalConfig(request, env);
-                    if (globalThis.client === 'xray') return await getXrayCustomConfigs(request, env, false);
-                    return await getNormalConfigs(request, env);
+                    return await getSingBoxCustomConfig(request, env, false);
 
                 case `/fragsub/${globalThis.userID}`:
-                    return globalThis.client === 'hiddify'
-                        ? await getSingBoxCustomConfig(request, env, true)
-                        : await getXrayCustomConfigs(request, env, true);
+                    return await getSingBoxCustomConfig(request, env, true);
 
                 case '/panel':
                     return await handlePanel(request, env);
