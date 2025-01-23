@@ -75,6 +75,37 @@ function Remove-NonAsciiCharacters {
     Write-Status "Removed non-ASCII characters and Unicode escapes from '$workerPath'"
 }
 
+function Normalize-Whitespace {
+    param([string]$workerPath)
+    $content = Get-Content -Path $workerPath -Raw
+
+    $pattern = @"
+    (
+        (?<string>"(?:\\"|[^"])*"|'(?:\\'|[^'])*')   # String literals
+        |
+        (?<regex>/(?:\\/|[^/\r\n])+?/(?:[gmiuy]+)?)  # Regex literals (basic support)
+        |
+        (?<block_comment>/\*.*?\*/)                  # Block comments
+        |
+        (?<line_comment>//[^\r\n]*)                  # Line comments
+        |
+        (?<space>[ \t]+)                             # Horizontal whitespace
+    )
+"@
+
+    $cleaned = [regex]::Replace($content, $pattern, {
+        param($match)
+        if ($match.Groups['space'].Success) {
+            ' '  # Collapse spaces/tabs to single space
+        } else {
+            $match.Value  # Preserve other matched elements
+        }
+    }, [System.Text.RegularExpressions.RegexOptions]::Singleline -bor [System.Text.RegularExpressions.RegexOptions]::IgnorePatternWhitespace)
+
+    Set-Content -Path $workerPath -Value $cleaned
+    Write-Host "Normalized whitespace sequences in '$workerPath'"
+}
+
 function Invoke-JsObfuscation {
     param([string]$workerPath)
     try {
@@ -127,6 +158,7 @@ function Build-Worker {
         Remove-ConsoleLogs -workerPath $workerPath
         Replace-NameCalls -workerPath $workerPath
         Remove-NonAsciiCharacters -workerPath $workerPath
+        Normalize-Whitespace -workerPath $workerPath
         Invoke-JsObfuscation -workerPath $workerPath
 
         return Get-Content -Path $workerPath -Raw
