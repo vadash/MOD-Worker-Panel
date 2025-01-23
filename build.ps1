@@ -47,7 +47,7 @@ function Replace-NameCalls {
 
     $replacements = New-Object System.Collections.Generic.List[object]
     foreach ($call in $nameCalls) {
-        $randomHexString = -join (Get-Random -Count 8 -InputObject ([char[]]'0123456789abcdef'))
+        $randomHexString = -join (Get-Random -Count 4 -InputObject ([char[]]'0123456789abcdef'))
         $newCall = $call.Value -replace '__name\(([^,]+),\s*"([^"]+)"\)', "__name(`$1, `"$randomHexString`")"
         $replacements.Add(@{ Original = $call.Value; New = $newCall })
     }
@@ -101,6 +101,9 @@ function Normalize-Whitespace {
             $match.Value  # Preserve other matched elements
         }
     }, [System.Text.RegularExpressions.RegexOptions]::Singleline -bor [System.Text.RegularExpressions.RegexOptions]::IgnorePatternWhitespace)
+
+    # Replace multiple newlines with a single newline
+    $cleaned = $cleaned -replace '[\r\n]+', "`n"
 
     Set-Content -Path $workerPath -Value $cleaned
     Write-Host "Normalized whitespace sequences in '$workerPath'"
@@ -193,7 +196,7 @@ function Replace-ForbiddenTerms {
 
     foreach ($term in $terms) {
         do {
-            $identifier = [char](97..122 | Get-Random) + (-join ((48..57) + (97..102) | Get-Random -Count 7))
+            $identifier = [char](97..122 | Get-Random) + (-join ((48..57) + (97..102) | Get-Random -Count 3))
         } while (!$usedValues.Add($identifier))
 
         $replacements[$term] = $identifier
