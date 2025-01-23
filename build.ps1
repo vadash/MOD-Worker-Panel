@@ -259,6 +259,7 @@ function Compress-WorkerFile {
 
 try {
     # Initial setup
+    npm install wrangler --save-dev
     Confirm-7ZipAvailable
     Stop-7ZipProcesses
     Remove-Item -Recurse -Force -Path .\output\ -ErrorAction SilentlyContinue

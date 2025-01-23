@@ -8,7 +8,7 @@
     "javascript-obfuscator": "latest",
     "js-confuser": "latest",
     "uglify-js": "latest",
-    "wrangler": "^3.103.2"
+    "wrangler": "^3.105.0"
   },
   "dependencies": {
     "jose": "latest"
