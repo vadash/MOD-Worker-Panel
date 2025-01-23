@@ -1,4 +1,4 @@
-import { resolveDNS, isDomain } from '../helpers/helpers';
+import { isDomain } from '../helpers/helpers';
 
 const MAX_IPS_TO_PICK = 8;
 
@@ -86,13 +86,6 @@ export function getRandomPath(length) {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
-}
-
-export function base64ToDecimal(base64) {
-    const binaryString = atob(base64);
-    const hexString = Array.from(binaryString).map(char => char.charCodeAt(0).toString(16).padStart(2, '0')).join('');
-    const decimalArray = hexString.match(/.{2}/g).map(hex => parseInt(hex, 16));
-    return decimalArray;
 }
 
 export function isIPv4(address) {
