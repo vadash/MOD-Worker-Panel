@@ -12,229 +12,268 @@ $sensitiveFileAuto = ".\sensitive_words_auto.txt"
 $sensitiveFileManual = ".\sensitive_words_manual.txt"
 $workerPath = ".\output\_worker.js"
 
-# Function to replace __name calls in the worker file
-function Replace-NameCalls {
+#region Helper Functions
+
+function Write-Status {
     param(
-        [string]$workerPath
+        [string]$Message,
+        [string]$Level = "INFO"
     )
+    $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+    Write-Host "[$timestamp] [$Level] $Message"
+}
 
-    # Read the content of the worker file
+function Ensure-OutputDirectory {
+    param([string]$Path = ".\output\")
+    if (!(Test-Path -Path $Path)) {
+        New-Item -ItemType Directory -Path $Path | Out-Null
+        Write-Status "Created output directory: $Path"
+    }
+}
+
+#endregion
+
+#region Core Functions
+
+function Replace-NameCalls {
+    param([string]$workerPath)
     $content = Get-Content -Path $workerPath -Raw
-
-    # Find all __name function calls
     $nameCalls = [regex]::Matches($content, '__name\(([^,]+),\s*"([^"]+)"\)')
 
-    if ($nameCalls) {
-        # Create a List to store replacements
-        $replacements = New-Object System.Collections.Generic.List[object]
+    if ($nameCalls.Count -eq 0) {
+        Write-Status "No __name calls found in '$workerPath'"
+        return
+    }
 
-        foreach ($call in $nameCalls) {
-            # Generate a random 8-character hex string
-            $randomHexString = -join (Get-Random -Count 8 -InputObject ([char[]]'0123456789abcdef'))
+    $replacements = New-Object System.Collections.Generic.List[object]
+    foreach ($call in $nameCalls) {
+        $randomHexString = -join (Get-Random -Count 8 -InputObject ([char[]]'0123456789abcdef'))
+        $newCall = $call.Value -replace '__name\(([^,]+),\s*"([^"]+)"\)', "__name(`$1, `"$randomHexString`")"
+        $replacements.Add(@{ Original = $call.Value; New = $newCall })
+    }
 
-            # Construct the new __name call with the random hex string
-            $newCall = $call.Value -replace '__name\(([^,]+),\s*"([^"]+)"\)', "__name(`$1, `"$randomHexString`")"
+    $newContent = $content
+    $replacements | ForEach-Object { $newContent = $newContent.Replace($_.Original, $_.New) }
+    Set-Content -Path $workerPath -Value $newContent -Force
+    Write-Status "Replaced $($nameCalls.Count) __name calls in '$workerPath'"
+}
 
-            # Add the original and new calls to the List
-            $replacements.Add(@{ Original = $call.Value; New = $newCall })
+function Remove-ConsoleLogs {
+    param([string]$workerPath)
+    $content = Get-Content -Path $workerPath
+    $filtered = $content | Where-Object { $_ -notmatch 'console\.(log|error|warn|info|debug)' }
+    Set-Content -Path $workerPath -Value $filtered
+    Write-Status "Removed console logs from '$workerPath'"
+}
+
+function Remove-NonAsciiCharacters {
+    param([string]$workerPath)
+    $content = Get-Content -Path $workerPath -Raw
+    # Regex to remove non-ASCII characters and Unicode escape sequences
+    $cleaned = $content -replace '[^\x00-\x7F]|\\u[0-9A-Fa-f]{4}|\\u\{[0-9A-Fa-f]{1,6}\}', ''
+    Set-Content -Path $workerPath -Value $cleaned
+    Write-Status "Removed non-ASCII characters and Unicode escapes from '$workerPath'"
+}
+
+function Invoke-JsObfuscation {
+    param([string]$workerPath)
+    try {
+        npx uglify-js $workerPath -o $workerPath --compress --mangle -O keep_quoted_props
+        Write-Status "Obfuscated JavaScript using uglify-js"
+    }
+    catch {
+        Write-Status "Failed to obfuscate JavaScript: $_" -Level "ERROR"
+        throw
+    }
+}
+
+function Replace-LetConstWithVar {
+    param([string]$workerPath)
+    $content = Get-Content -Path $workerPath
+    $modified = $content -replace '\b(let|const)\b', 'var'
+    Set-Content -Path $workerPath -Value $modified
+    Write-Status "Replaced let/const with var in '$workerPath'"
+}
+
+#endregion
+
+#region Build Process
+
+function Invoke-WranglerBuild {
+    try {
+        npx wrangler deploy --dry-run --outdir output *>&1 | Out-Null
+        if (!(Test-Path ".\output\worker.js")) {
+            throw "Wrangler build failed - no output file created"
         }
-
-        # Replace the original calls with the new ones
-        $newContent = $content
-        foreach ($replacement in $replacements) {
-            $newContent = $newContent.Replace($replacement.Original, $replacement.New)
-        }
-
-        # Write the modified content back to the file
-        Set-Content -Path $workerPath -Value $newContent -Force
-        Write-Host "Successfully replaced __name calls in '$workerPath'"
-    } else {
-        Write-Host "No __name calls found in '$workerPath'"
+        Write-Status "Successfully built worker with wrangler"
+    }
+    catch {
+        Write-Status "Wrangler build failed: $_" -Level "ERROR"
+        throw
     }
 }
 
-# Function to validate 7-Zip installation
-function Validate-7ZipInstallation {
-    if (!(Test-Path $sevenZipPath)) {
-        Write-Host "Error: 7-Zip not found at $sevenZipPath"
-        exit 1
-    }
+function Initialize-WorkerFile {
+    Rename-Item -Path ".\output\worker.js" -NewName "_worker.js" -Force
+    Write-Status "Renamed worker.js to _worker.js"
 }
 
-# Function to kill 7z GUI if it's running
-function Stop-7zGUI {
-    taskkill /f /im 7zFM.exe
-}
-
-# Function to load forbidden strings from file
-function Load-ForbiddenStrings {
-    param(
-        [string]$filePath
-    )
-
-    if (Test-Path $filePath) {
-        return Get-Content $filePath
-    } else {
-        Write-Host "Error: $filePath not found."
-        exit 1
-    }
-}
-
-# Function to build the worker
 function Build-Worker {
     try {
-        # Ensure the output directory exists
-        if (!(Test-Path -Path .\output\)) {
-            New-Item -ItemType Directory -Path .\output\
-        }
+        Ensure-OutputDirectory
+        Invoke-WranglerBuild
+        Initialize-WorkerFile
 
-        # Build the worker
-        npx wrangler deploy --dry-run --outdir output
-
-        # Rename worker
-        Rename-Item -Path ".\output\worker.js" -NewName "_worker.js"
-
-        # Remove console logging
-        $workerContent = Get-Content -Path $workerPath
-        $cleanedContent = $workerContent | Where-Object { $_ -notmatch 'console.*(?:log|error)' }
-        Set-Content -Path $workerPath -Value $cleanedContent
-
-        # Remove debug code (__name functions)
+        Remove-ConsoleLogs -workerPath $workerPath
         Replace-NameCalls -workerPath $workerPath
+        Remove-NonAsciiCharacters -workerPath $workerPath
+        Invoke-JsObfuscation -workerPath $workerPath
 
-        # Remove non-ASCII characters (including emojis) while preserving basic whitespace
-        $workerContent = Get-Content -Path $workerPath -Raw
-        $cleanedContent = $workerContent -replace '[^\x00-\x7F]', ''
-        Set-Content -Path $workerPath -Value $cleanedContent
-
-        # Remove comments from worker
-        npx uglify-js $workerPath -o $workerPath --compress --mangle -O keep_quoted_props
-
-        # Store the original worker content
         return Get-Content -Path $workerPath -Raw
-    } catch {
-        Write-Host "Failed to build worker: $_"
-        pause
+    }
+    catch {
+        Write-Status "Build failed: $_" -Level "ERROR"
+        throw
+    }
+}
+
+#endregion
+
+#region Security Functions
+
+function Get-ForbiddenStrings {
+    param([string]$filePath)
+    if (!(Test-Path $filePath)) {
+        Write-Status "Critical error: Missing forbidden strings file '$filePath'" -Level "ERROR"
         exit 1
     }
+    return Get-Content $filePath | Where-Object { $_ -match '\S' }
 }
 
-# Function to replace forbidden strings with random hex names
-function Replace-ForbiddenStrings {
+function Replace-ForbiddenTerms {
     param(
         [string]$workerPath,
-        [string[]]$forbiddenStrings,
-        [System.Collections.Generic.HashSet[string]]$usedHexValues
+        [array]$terms,
+        [System.Collections.Generic.HashSet[string]]$usedValues
     )
+    $content = Get-Content -Path $workerPath -Raw
+    $replacements = @{}
 
-    $forbiddenReplacements = @{}
-    foreach ($forbiddenString in $forbiddenStrings) {
-        # Generate a unique random identifier starting with letter followed by hex
+    foreach ($term in $terms) {
         do {
-            $randomLetter = [char](Get-Random -Minimum 97 -Maximum 123) # a-z
-            $length = Get-Random -Minimum 1 -Maximum 2
-            $randomHex = -join ((48..57) + (97..102) | Get-Random -Count $length | ForEach-Object {[char]$_})
-            $identifier = "$randomLetter$randomHex"
-        } while (!$usedHexValues.Add($identifier))
-        $forbiddenReplacements[$forbiddenString] = $identifier
+            $identifier = [char](97..122 | Get-Random) + (-join ((48..57) + (97..102) | Get-Random -Count 7))
+        } while (!$usedValues.Add($identifier))
+
+        $replacements[$term] = $identifier
+        $pattern = "(?i)\b$([regex]::Escape($term))\b"
+        $content = $content -replace $pattern, $identifier
     }
 
-    $jsContent = Get-Content -Path $workerPath -Raw
-    foreach ($forbiddenString in $forbiddenStrings) {
-        # Use word boundaries with case-insensitive matching
-        $pattern = "(?i)\b$forbiddenString\b"
-        $jsContent = $jsContent -replace $pattern, $forbiddenReplacements[$forbiddenString]
-    }
-    Set-Content -Path $workerPath -Value $jsContent
+    Set-Content -Path $workerPath -Value $content
+    Write-Status "Replaced $($terms.Count) forbidden terms in '$workerPath'"
 }
 
-# Function to check for forbidden strings in the worker script
-function Check-ForbiddenStrings {
+function Test-ForbiddenStrings {
     param(
         [string]$workerPath,
-        [string[]]$forbiddenStrings
+        [array]$forbiddenStrings
     )
-
-    $workerScript = Get-Content -Path $workerPath -Raw
-    foreach ($string in $forbiddenStrings) {
-        if ($workerScript -imatch $string) {
-            Write-Host "Warning: Forbidden string '$string' found in worker script. Retrying..."
-            [System.Console]::Beep(800,500)
+    $content = Get-Content -Path $workerPath -Raw
+    foreach ($term in $forbiddenStrings) {
+        if ($content -imatch "\b$term\b") {
+            Write-Status "Security violation detected: '$term'" -Level "WARNING"
+            [System.Console]::Beep(800, 500)
             return $true
         }
     }
     return $false
 }
 
-# Function to compress the worker into a zip file
-function Compress-Worker {
+#endregion
+
+#region Compression Functions
+
+function Confirm-7ZipAvailable {
+    if (!(Test-Path $sevenZipPath)) {
+        Write-Status "7-Zip not found at $sevenZipPath" -Level "ERROR"
+        exit 1
+    }
+    Write-Status "7-Zip found at $sevenZipPath"
+}
+
+function Stop-7ZipProcesses {
+    taskkill /f /im 7zFM.exe 2>&1 | Out-Null
+    Write-Status "Terminated 7-Zip GUI processes"
+}
+
+function Compress-WorkerFile {
     param(
         [string]$workerPath,
-        [string]$zipsDirectory
+        [string]$outputDir
     )
+    Ensure-OutputDirectory -Path $outputDir
+    $zipName = "worker-$(New-Guid).zip"
 
-    $randomGuid = [guid]::NewGuid().ToString()
-    $zipFileName = "worker-$randomGuid.zip"
-
-    # Ensure the zips directory exists
-    if (!(Test-Path -Path $zipsDirectory)) {
-        New-Item -ItemType Directory -Path $zipsDirectory
-    }
-
-    # Set no compression to see real size
-    & $sevenZipPath a -tzip -mx=0 "$zipsDirectory\$zipFileName" $workerPath
+    & $sevenZipPath a -tzip -mx=0 "$outputDir\$zipName" $workerPath *>&1 | Out-Null
+    Write-Status "Created compressed worker: $zipName"
 }
 
-# Main script execution
-Validate-7ZipInstallation
-Stop-7zGUI
+#endregion
 
-# Remove the output directory if it exists
-Remove-Item -Recurse -Force -Path .\output\ -ErrorAction SilentlyContinue
+#region Main Execution
 
-# Load forbidden strings from file
-$sensitiveStringsAuto = Load-ForbiddenStrings -filePath $sensitiveFileAuto
-$sensitiveStringsManual = Load-ForbiddenStrings -filePath $sensitiveFileManual
+try {
+    # Initial setup
+    Confirm-7ZipAvailable
+    Stop-7ZipProcesses
+    Remove-Item -Recurse -Force -Path .\output\ -ErrorAction SilentlyContinue
 
-# Build worker once
-Build-Worker
-$originalWorker = Get-Content -Path $workerPath -Raw
+    # Load security data
+    $autoForbidden = Get-ForbiddenStrings -filePath $sensitiveFileAuto
+    $manualForbidden = Get-ForbiddenStrings -filePath $sensitiveFileManual
 
-$successfulBuilds = 0
-while ($successfulBuilds -lt $howManyToBuild) {
-    try {
-        # Create fresh copy of worker
-        Set-Content -Path $workerPath -Value $originalWorker
+    # Initial build
+    $originalContent = Build-Worker
+    $successCount = 0
+    $retryCount = 0
+    $maxRetries = $howManyToBuild * 3  # Prevent infinite loops
 
-        # Replace forbidden variable/function names with random hex names
-        $usedHexValues = [System.Collections.Generic.HashSet[string]]::new()
-        Replace-ForbiddenStrings -workerPath $workerPath -forbiddenStrings $sensitiveStringsManual -usedHexValues $usedHexValues
+    while ($successCount -lt $howManyToBuild -and $retryCount -lt $maxRetries) {
+        try {
+            $retryCount++
+            Set-Content -Path $workerPath -Value $originalContent
+            $usedIdentifiers = [System.Collections.Generic.HashSet[string]]::new()
 
-        # Obfuscate the worker with proper tool
-        node .\obfuscate.mjs
+            Replace-ForbiddenTerms -workerPath $workerPath -terms $manualForbidden -usedValues $usedIdentifiers
+            node .\obfuscate.mjs *>&1 | Out-Null
 
-        # Search for forbidden strings in the worker output script
-        if (Check-ForbiddenStrings -workerPath $workerPath -forbiddenStrings $sensitiveStringsAuto) {
-            continue
+            if (Test-ForbiddenStrings -workerPath $workerPath -forbiddenStrings $autoForbidden) {
+                continue
+            }
+
+            Replace-LetConstWithVar -workerPath $workerPath
+            Compress-WorkerFile -workerPath $workerPath -outputDir ".\output\zips"
+
+            $successCount++
+            Write-Status "Successfully created worker $successCount/$howManyToBuild" -Level "SUCCESS"
         }
+        catch {
+            Write-Status "Build attempt $retryCount failed: $_" -Level "WARNING"
+        }
+    }
 
-        # Replace "let" and "const" with "var"
-        (Get-Content -Path $workerPath) -replace '\b(let|const)\b', 'var' | Set-Content -Path $workerPath
-
-        # Prepare for 7-Zip compression
-        $zipsDirectory = ".\output\zips"
-        Compress-Worker -workerPath $workerPath -zipsDirectory $zipsDirectory
-
-        # Increment successful builds counter only after everything succeeds
-        $successfulBuilds++
-        Write-Host "Successfully created worker $successfulBuilds of $howManyToBuild"
-
-    } catch {
-        Write-Host "An error occurred: $_"
-        continue
+    # Cleanup and final report
+    Get-ChildItem -Path .\output\ -Exclude zips | Remove-Item -Recurse -Force
+    if ($successCount -eq $howManyToBuild) {
+        Write-Status "Build process completed successfully" -Level "SUCCESS"
+    }
+    else {
+        Write-Status "Build process completed with only $successCount/$howManyToBuild successful builds" -Level "WARNING"
     }
 }
+catch {
+    Write-Status "Critical error in main execution: $_" -Level "ERROR"
+    exit 1
+}
 
-# Clean up temporary files
-Get-ChildItem -Path .\output\ -Exclude zips | Remove-Item -Recurse -Force
-Write-Host "Build process completed. Created $successfulBuilds workers."
+#endregion
