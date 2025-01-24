@@ -41,11 +41,7 @@ export async function getConfigAddresses(cleanIPs, enableIPv6) {
         selectedIPs = [...selectedIPs, ...additionalIPs];
     }
 
-    return [
-        'www.vimeo.com',
-        'www.speedtest.net',
-        ...selectedIPs
-    ];
+    return selectedIPs;
 }
 
 export function extractWireguardParams(warpConfigs, isWoW) {
