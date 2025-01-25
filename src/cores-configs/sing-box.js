@@ -682,7 +682,7 @@ const singboxConfigTemp = {
             type: "urltest",
             tag: "",
             outbounds: [],
-            url: "https://pastebin.com/raw/E3xeXQmT",
+            url: "https://gist.githubusercontent.com/vadash/0fe70c9644ce9104995e8b148fb1ca11/raw/5f40b219b3418294308e79dea70d7ce284c2e715/ping_512KB.bin",
             interval: ""
         },
         {
