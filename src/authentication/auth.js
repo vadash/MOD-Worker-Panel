@@ -14,13 +14,13 @@ async function generateJWTToken(request, env) {
     const jwtToken = await new SignJWT({ userID: globalThis.userID })
         .setProtectedHeader({ alg: 'HS256' })
         .setIssuedAt()
-        .setExpirationTime('24h')
+        .setExpirationTime('7d')
         .sign(secret);
 
     return new Response('Success', {
         status: 200,
         headers: {
-            'Set-Cookie': `jwtToken=${jwtToken}; HttpOnly; Secure; Max-Age=${7 * 24 * 60 * 60}; Path=/; SameSite=Strict`,
+            'Set-Cookie': `jwtToken=${jwtToken}; HttpOnly; Secure; Max-Age=${30 * 24 * 60 * 60}; Path=/; SameSite=Strict`,
             'Content-Type': 'text/plain',
         }
     });
