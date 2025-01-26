@@ -4,7 +4,7 @@ const MAX_IPS_TO_PICK = 8;
 
 export async function getConfigAddresses(cleanIPs, enableIPv6) {
     const ips = cleanIPs ? cleanIPs.split(',') : [];
-    
+
     // Group IPs by first two octets
     const ipGroups = {};
     ips.forEach(ip => {
@@ -21,9 +21,9 @@ export async function getConfigAddresses(cleanIPs, enableIPv6) {
     // Get unique group keys and shuffle them
     const groupKeys = Object.keys(ipGroups);
     const shuffledGroups = groupKeys.sort(() => Math.random() - 0.5);
-    
+
     let selectedIPs = [];
-    
+
     // Try to get one IP from each group first (up to MAX_IPS_TO_PICK)
     shuffledGroups.slice(0, MAX_IPS_TO_PICK).forEach(groupKey => {
         const groupIPs = ipGroups[groupKey];
