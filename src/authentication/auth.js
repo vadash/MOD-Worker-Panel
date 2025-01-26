@@ -20,7 +20,7 @@ async function generateJWTToken(request, env) {
     return new Response('Success', {
         status: 200,
         headers: {
-            'Set-Cookie': `jwtToken=${jwtToken}; HttpOnly; Secure; Max-Age=${30 * 24 * 60 * 60}; Path=/; SameSite=Strict`,
+            'Set-Cookie': `jwtToken=${jwtToken}; HttpOnly; Secure; Max-Age=${7 * 24 * 60 * 60}; Path=/; SameSite=Strict`,
             'Content-Type': 'text/plain',
         }
     });
@@ -57,7 +57,7 @@ export function logout() {
     return new Response('Success', {
         status: 200,
         headers: {
-            'Set-Cookie': 'jwtToken=; Secure; SameSite=None; Expires=Thu, 01 Jan 1970 00:00:00 GMT',
+            'Set-Cookie': 'jwtToken=; Path=/; Secure; SameSite=None; Expires=Thu, 01 Jan 1970 00:00:00 GMT',
             'Content-Type': 'text/plain'
         }
     });
