@@ -55,14 +55,6 @@ export async function handlePanel(request, env) {
     return await renderHomePage(proxySettings, isPassSet);
 }
 
-export async function fallback(request) {
-    const url = new URL(request.url);
-    url.hostname = 'speed.cloudflare.com';
-    url.protocol = 'https:';
-    request = new Request(url, request);
-    return await fetch(request);
-}
-
 export async function getMyIP(request) {
     const ip = await request.text();
     try {
