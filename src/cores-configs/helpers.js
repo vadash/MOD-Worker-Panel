@@ -44,17 +44,6 @@ export async function getConfigAddresses(cleanIPs, enableIPv6) {
     return selectedIPs;
 }
 
-export function extractWireguardParams(warpConfigs, isWoW) {
-    const index = isWoW ? 1 : 0;
-    const warpConfig = warpConfigs[index].account.config;
-    return {
-        warpIPv6: `${warpConfig.interface.addresses.v6}/128`,
-        reserved: warpConfig.client_id,
-        publicKey: warpConfig.peers[0].public_key,
-        privateKey: warpConfigs[index].privateKey,
-    };
-}
-
 export function generateRemark(index, port, address, cleanIPs, protocol, configType) {
     let addressType;
     const type = configType ? ` ${configType}` : '';

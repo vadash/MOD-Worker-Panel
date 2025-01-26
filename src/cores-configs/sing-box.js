@@ -1,4 +1,4 @@
-import { getConfigAddresses, extractWireguardParams, generateRemark, randomUpperCase, getRandomPath, isIPv6 } from './helpers';
+import { getConfigAddresses, generateRemark, randomUpperCase, getRandomPath, isIPv6 } from './helpers';
 import { getDataset } from '../kv/handlers';
 import { isDomain } from '../helpers/helpers';
 
