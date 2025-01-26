@@ -441,19 +441,19 @@ export async function renderHomePage(proxySettings, isPassSet) {
                     <div class="form-control">
                         <label for="fragmentLengthMin">📐 Length</label>
                         <div class="min-max">
-                            <input type="number" id="fragmentLengthMin" name="fragmentLengthMin" value="${lengthMin}" min="10" required>
+                            <input type="number" id="fragmentLengthMin" name="fragmentLengthMin" value="${lengthMin}" required>
                             <span> - </span>
-                            <input type="number" id="fragmentLengthMax" name="fragmentLengthMax" value="${lengthMax}" max="500" required>
+                            <input type="number" id="fragmentLengthMax" name="fragmentLengthMax" value="${lengthMax}" required>
                         </div>
                     </div>
                     <div class="form-control">
                         <label for="fragmentIntervalMin">🕞 Interval</label>
                         <div class="min-max">
                             <input type="number" id="fragmentIntervalMin" name="fragmentIntervalMin"
-                                value="${intervalMin}" min="1" max="30" required>
+                                value="${intervalMin}" required>
                             <span> - </span>
                             <input type="number" id="fragmentIntervalMax" name="fragmentIntervalMax"
-                                value="${intervalMax}" min="1" max="30" required>
+                                value="${intervalMax}" required>
                         </div>
                     </div>
                     <div class="form-control">
