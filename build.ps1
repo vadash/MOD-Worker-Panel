@@ -3,6 +3,7 @@
 # Description: This script builds Cloudflare Workers, obfuscates them,
 #              checks for forbidden strings, and compresses them into zip files.
 # Creator: vadash
+# Version: 1.0.0
 # ==================================================================
 
 # Constants
@@ -308,6 +309,7 @@ try {
 }
 catch {
     Write-Status "Critical error in main execution: $_" -Level "ERROR"
+    pause
     exit 1
 }
 
