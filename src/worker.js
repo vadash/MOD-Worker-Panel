@@ -1,4 +1,5 @@
 import { initializeParams } from './helpers/init';
+import { initializeMockDb } from './helpers/mockDb';
 import { vlessOverWSHandler } from './protocols/vless';
 import { trojanOverWSHandler } from './protocols/trojan';
 import { logout, resetPassword, login } from './authentication/auth';
@@ -18,6 +19,9 @@ export default {
                     ? await trojanOverWSHandler(request)
                     : await vlessOverWSHandler(request);
             }
+
+            // Force proper region for CF worker via D1 trick
+            await initializeMockDb(env.MOCK_DB);
 
             // Handle other paths
             switch (globalThis.pathName) {

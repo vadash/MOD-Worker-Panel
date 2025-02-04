@@ -17,6 +17,7 @@ A modified Cloudflare Worker Panel for **my** needs. You are welcome to use it.
 - `HASH`: Hash for Trojan protocol (calc it here for `PASS` https://emn178.github.io/online-tools/sha224.html)
 - `DATABASE`: KV namespace for settings storage (old hardcoded `bpb`). Must be same as KV name.
 - `PROXYIP`: Comma-separated list of proxy IPs. Pick few closest to your location https://www.nslookup.io/domains/bpb.yousef.isegaro.com/dns-records/. Or just use `bpb.yousef.isegaro.com` if you are lazy.
+- `MOCK_DB`: using D1 database to pin worker to specific region.
 
 ![image](https://github.com/user-attachments/assets/12aaad8a-d05c-4356-aa2f-291a139301f6)
 
