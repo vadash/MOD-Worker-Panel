@@ -8,6 +8,12 @@ A modified Cloudflare Worker Panel for **my** needs. You are welcome to use it.
 - 🚫 Automatic banned word detection in obfuscated code (vless, trojan, bpb)
 - 🌐 Smart CleanIP management with random selection (up to 10 IPs) from clean IP pool
 
+# Clients
+
+PC: sing-box and https://github.com/kyochikuto/sing-box-plus for fragmented configs
+
+Android: https://github.com/KaringX/karing
+
 # 🚀 Configuration
 
 ## 🔑 Required Environment Variables
