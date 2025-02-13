@@ -19,7 +19,7 @@ A modified Cloudflare Worker Panel for **my** needs. You are welcome to use it.
 - `PROXYIP`: Comma-separated list of proxy IPs. Pick few closest to your location https://www.nslookup.io/domains/bpb.yousef.isegaro.com/dns-records/. Or just use `bpb.yousef.isegaro.com` if you are lazy.
 - `MOCK_DB`: using D1 database to pin worker to specific region.
 
-![image](https://github.com/user-attachments/assets/12aaad8a-d05c-4356-aa2f-291a139301f6)
+![image](https://i.imgur.com/uIwlODf.png)
 
 ## ⚙️ Panel Settings
 
