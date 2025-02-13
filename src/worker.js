@@ -7,6 +7,11 @@ import { renderErrorPage } from './pages/error';
 import { getSingBoxCustomConfig } from './cores-configs/sing-box';
 import { getMyIP, handlePanel } from './helpers/helpers';
 
+// Forbid Russian colos so it picks proper EU one
+export const NETWORK = Object.freeze({
+    FORBIDDEN_COLOS: ["DME", "LED", "SVX", "KJA"],
+});
+
 export default {
     async fetch(request, env) {
         try {
@@ -15,9 +20,18 @@ export default {
 
             // Prioritize vless/trojan proxy requests
             if (upgradeHeader === 'websocket') {
-                return globalThis.pathName.startsWith('/tr')
-                    ? await trojanOverWSHandler(request)
-                    : await vlessOverWSHandler(request);
+                const colo = request.cf?.colo;
+                if (colo && NETWORK.FORBIDDEN_COLOS.includes(colo)) {
+                    return new Response(`Bad Cloudflare colo: ${colo}. Try again with another clean IP.`, {
+                        status: 403,
+                        headers: { 'Content-Type': 'text/plain' },
+                    });
+                }
+                else {
+                    return globalThis.pathName.startsWith('/tr')
+                        ? await trojanOverWSHandler(request)
+                        : await vlessOverWSHandler(request);
+                }
             }
 
             // Force proper region for CF worker via D1 trick
