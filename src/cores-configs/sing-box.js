@@ -350,7 +350,6 @@ function buildSingBoxVLESSOutbound(proxySettings, remark, address, port, host, s
         domain_strategy: enableIPv6 ? "prefer_ipv4" : "ipv4_only",
         uuid: globalThis.userID,
         tls: {
-            alpn: "http/1.1",
             enabled: true,
             insecure: allowInsecure,
             server_name: sni,
@@ -392,7 +391,6 @@ function buildSingBoxTrojanOutbound(proxySettings, remark, address, port, host, 
         server_port: +port,
         domain_strategy: enableIPv6 ? "prefer_ipv4" : "ipv4_only",
         tls: {
-            alpn: "http/1.1",
             enabled: true,
             insecure: allowInsecure,
             server_name: sni,
@@ -454,12 +452,10 @@ function buildSingBoxChainOutbound(chainProxyParams, enableIPv6) {
     };
 
     if (security === 'tls' || security === 'reality') {
-        const tlsAlpns = alpn ? alpn?.split(',').filter(value => value !== 'h2') : [];
         chainOutbound.tls = {
             enabled: true,
             server_name: sni,
             insecure: false,
-            alpn: tlsAlpns,
             utls: {
                 enabled: true,
                 fingerprint: fp
