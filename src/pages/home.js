@@ -29,11 +29,9 @@ export async function renderHomePage(proxySettings, isPassSet) {
         customBypassRules,
         customBlockRules
     } = proxySettings;
-
     const activeProtocols = (vlessConfigs ? 1 : 0) + (trojanConfigs ? 1 : 0);
     let httpPortsBlock = '', httpsPortsBlock = '';
     const allPorts = [...(globalThis.hostName.includes('workers.dev') ? globalThis.defaultHttpPorts : []), ...globalThis.defaultHttpsPorts];
-
     allPorts.forEach(port => {
         const id = `port-${port}`;
         const isChecked = ports.includes(port) ? 'checked' : '';
@@ -44,14 +42,11 @@ export async function renderHomePage(proxySettings, isPassSet) {
             </div>`;
         globalThis.defaultHttpsPorts.includes(port) ? httpsPortsBlock += portBlock : httpPortsBlock += portBlock;
     });
-
     const supportedApps = apps => apps.map(app => `
         <div>
             <span class="material-symbols-outlined symbol">verified</span>
             <span>${app}</span>
         </div>`).join('');
-
-
     const subURL = (path, app, tag) => {
         const url = `https://${globalThis.hostName}/${path}/${globalThis.userID}${app ? `?app=${app}` : ''}#${tag}`;
         return `
@@ -59,7 +54,6 @@ export async function renderHomePage(proxySettings, isPassSet) {
                 Copy Sub<span class="material-symbols-outlined">format_list_bulleted</span>
             </button>`;
     }
-
     const homePage = `
     <!DOCTYPE html>
     <html lang="en">
@@ -88,7 +82,6 @@ export async function renderHomePage(proxySettings, isPassSet) {
                 --header-shadow: 2px 2px 4px rgba(255, 255, 255, 0.25);
             }
             body { font-family: Twemoji Country Flags, system-ui; background-color: var(--background-color); color: var(--color) }
-
             .material-symbols-outlined {
                 margin-left: 5px;
                 font-variation-settings:
@@ -298,7 +291,6 @@ export async function renderHomePage(proxySettings, isPassSet) {
             .form-control input[type="password"]:focus { border-color: var(--secondary-color); outline: none; }
             #passwordError { color: red; margin-bottom: 10px; }
             .symbol { margin-right: 8px; }
-
             .floating-button {
                 position: fixed;
                 bottom: 20px;
@@ -573,7 +565,6 @@ export async function renderHomePage(proxySettings, isPassSet) {
                     </form>
                 </div>
             </div>
-
             <hr>
             <div class="footer">
                 <button id="openModalBtn" class="button">Change Password</button>
@@ -582,18 +573,12 @@ export async function renderHomePage(proxySettings, isPassSet) {
                 </button>
             </div>
         </div>
-
     <script type="module" defer>
         import { polyfillCountryFlagEmojis } from "https://cdn.skypack.dev/country-flag-emoji-polyfill";
         polyfillCountryFlagEmojis();
     </script>
     <script>
         const defaultHttpsPorts = ['443', '8443', '2053', '2083', '2087', '2096'];
-        let activePortsNo = ${ports.length};
-        let activeHttpsPortsNo = ${ports.filter(port => globalThis.defaultHttpsPorts.includes(port)).length};
-        let activeProtocols = ${activeProtocols};
-
-
         document.addEventListener('DOMContentLoaded', async () => {
             const configForm = document.getElementById('configForm');
             const changePass = document.getElementById('openModalBtn');
@@ -603,16 +588,12 @@ export async function renderHomePage(proxySettings, isPassSet) {
             const modal = document.getElementById('myModal');
             const resetSettings = document.getElementById('resetSettings');
             let forcedPassChange = false;
-
-
             const hasFormDataChanged = () => {
                 const currentFormData = new FormData(configForm);
                 const currentFormDataEntries = [...currentFormData.entries()];
-
                 const nonCheckboxFieldsChanged = currentFormDataEntries.some(
                     ([key, value]) => !initialFormData.has(key) || initialFormData.get(key) !== value
                 );
-
                 const checkboxFieldsChanged = Array.from(configForm.elements)
                     .filter((element) => element.type === 'checkbox')
                     .some((checkbox) => {
@@ -622,16 +603,13 @@ export async function renderHomePage(proxySettings, isPassSet) {
                     const currentValue = currentFormDataEntries.find(([key]) => key === checkbox.name)?.[1] || false;
                     return initialValue !== currentValue;
                 });
-
                 return nonCheckboxFieldsChanged || checkboxFieldsChanged;
             };
-
             const enableApplyButton = () => {
                 const isChanged = hasFormDataChanged();
                 applyButton.disabled = !isChanged;
                 applyButton.classList.toggle('disabled', !isChanged);
             };
-
             passwordChangeForm.addEventListener('submit', event => resetPassword(event));
             document.getElementById('logout').addEventListener('click', event => logout(event));
             configForm.addEventListener('submit', (event) => applySettings(event, configForm));
@@ -647,7 +625,6 @@ export async function renderHomePage(proxySettings, isPassSet) {
                 modal.style.display = "none";
                 document.body.style.overflow = "";
             });
-
             resetSettings.addEventListener('click', async () => {
                 const confirmReset = confirm('⚠️ This will reset all panel settings.\\nAre you sure?');
                 if(!confirmReset) return;
@@ -657,13 +634,11 @@ export async function renderHomePage(proxySettings, isPassSet) {
                     document.body.style.cursor = 'wait';
                     const refreshButtonVal = refreshBtn.innerHTML;
                     refreshBtn.innerHTML = '⌛ Loading...';
-
                     const response = await fetch('/panel', {
                         method: 'POST',
                         body: formData,
                         credentials: 'include'
                     });
-
                     document.body.style.cursor = 'default';
                     refreshBtn.innerHTML = refreshButtonVal;
                     if (!response.ok) {
@@ -678,60 +653,12 @@ export async function renderHomePage(proxySettings, isPassSet) {
                     console.error('Error:', error);
                 }
             });
-
             const isPassSet = ${isPassSet};
             if (!isPassSet) {
                 forcedPassChange = true;
                 changePass.click();
             }
         });
-
-        const handlePortChange = (event) => {
-
-            if(event.target.checked) {
-                activePortsNo++
-                defaultHttpsPorts.includes(event.target.name) && activeHttpsPortsNo++;
-            } else {
-                activePortsNo--;
-                defaultHttpsPorts.includes(event.target.name) && activeHttpsPortsNo--;
-            }
-
-            if (activePortsNo === 0) {
-                event.preventDefault();
-                event.target.checked = !event.target.checked;
-                alert("⛔ At least one port should be selected! 🫤");
-                activePortsNo = 1;
-                defaultHttpsPorts.includes(event.target.name) && activeHttpsPortsNo++;
-                return false;
-            }
-
-            if (activeHttpsPortsNo === 0) {
-                event.preventDefault();
-                event.target.checked = !event.target.checked;
-                alert("⛔ At least one TLS(https) port should be selected! 🫤");
-                activeHttpsPortsNo = 1;
-                return false;
-            }
-        }
-
-        const handleProtocolChange = (event) => {
-
-            if(event.target.checked) {
-                activeProtocols++
-            } else {
-                activeProtocols--;
-            }
-
-            if (activeProtocols === 0) {
-                event.preventDefault();
-                event.target.checked = !event.target.checked;
-                alert("⛔ At least one Protocol should be selected! 🫤");
-                activeProtocols = 1;
-                return false;
-            }
-        }
-
-
         const copyToClipboard = (text) => {
             const textarea = document.createElement('textarea');
             textarea.value = text;
@@ -741,7 +668,6 @@ export async function renderHomePage(proxySettings, isPassSet) {
             document.body.removeChild(textarea);
             alert('📋 Copied to clipboard:\\n\\n' +  text);
         }
-
         const applySettings = async (event, configForm) => {
             event.preventDefault();
             event.stopPropagation();
@@ -762,14 +688,11 @@ export async function renderHomePage(proxySettings, isPassSet) {
             const customBlockRules = document.getElementById('customBlockRules').value?.split(',');
             const formData = new FormData(configForm);
             const isVless = /vless:\\/\\/[^\s@]+@[^\\s:]+:[^\\s]+/.test(chainProxy);
-            const isSocksHttp = /^(http|socks):\\/\\/(?:([^:@]+):([^:@]+)@)?([^:@]+):(\\d+)$/.test(chainProxy);
             const hasSecurity = /security=/.test(chainProxy);
             const securityRegex = /security=(tls|none|reality)/;
             const validSecurityType = securityRegex.test(chainProxy);
             let match = chainProxy.match(securityRegex);
             const securityType = match ? match[1] : null;
-            match = chainProxy.match(/:(\\d+)\\?/);
-            const vlessPort = match ? match[1] : null;
             const validTransmission = /type=(tcp|grpc|ws)/.test(chainProxy);
             const validIPDomain = /^((?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,})|(?:(?:25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(?:25[0-5]|2[0-4]\\d|[01]?\\d\\d?)(?:\\/(?:\\d|[12]\\d|3[0-2]))?|\\[(?:(?:[a-fA-F0-9]{1,4}:){7}[a-fA-F0-9]{1,4}|(?:[a-fA-F0-9]{1,4}:){1,7}:|(?:[a-fA-F0-9]{1,4}:){1,6}:[a-fA-F0-9]{1,4}|(?:[a-fA-F0-9]{1,4}:){1,5}(?::[a-fA-F0-9]{1,4}){1,2}|(?:[a-fA-F0-9]{1,4}:){1,4}(?::[a-fA-F0-9]{1,4}){1,3}|(?:[a-fA-F0-9]{1,4}:){1,3}(?::[a-fA-F0-9]{1,4}){1,4}|(?:[a-fA-F0-9]{1,4}:){1,2}(?::[a-fA-F0-9]{1,4}){1,5}|[a-fA-F0-9]{1,4}:(?::[a-fA-F0-9]{1,4}){1,6}|:(?::[a-fA-F0-9]{1,4}){1,7})\\](?:\\/(?:12[0-8]|1[0-1]\\d|[0-9]?\\d))?)$/i;
             const checkedPorts = Array.from(document.querySelectorAll('input[id^="port-"]:checked')).map(input => input.id.split('-')[1]);
@@ -777,53 +700,47 @@ export async function renderHomePage(proxySettings, isPassSet) {
             configForm.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
                 !formData.has(checkbox.name) && formData.append(checkbox.name, 'false');
             });
-
             const invalidIPs = [...cleanIPs, ...proxyIPs, ...customCdnAddrs, ...customBypassRules, ...customBlockRules, customCdnHost, customCdnSni]?.filter(value => {
                 if (value) {
                     const trimmedValue = value.trim();
                     return !validIPDomain.test(trimmedValue);
                 }
             });
-
             if (invalidIPs.length) {
                 alert('⛔ Invalid IPs or Domains 🫤\\n\\n' + invalidIPs.map(ip => '⚠️ ' + ip).join('\\n'));
                 return false;
             }
-
             if (lengthMin >= lengthMax || intervalMin > intervalMax) {
                 alert('⛔ Minimum should be smaller or equal to Maximum! 🫤');
                 return false;
             }
-
-            if (!(isVless && (hasSecurity && validSecurityType || !hasSecurity) && validTransmission) && !isSocksHttp && chainProxy) {
-                alert('⛔ Invalid Config! 🫤 \\n - The chain proxy should be VLESS, Socks or Http!\\n - VLESS transmission should be GRPC,WS or TCP\\n - VLESS security should be TLS,Reality or None\\n - socks or http should be like:\\n + (socks or http)://user:pass@host:port\\n + (socks or http)://host:port');
+            if (!(isVless && (hasSecurity && validSecurityType || !hasSecurity) && validTransmission)  && chainProxy) {
+                alert('⛔ Invalid Config! 🫤 \\n - The chain proxy should be VLESS!\\n - VLESS transmission should be GRPC,WS or TCP\\n - VLESS security should be TLS,Reality or None');
                 return false;
             }
-
-            if (isVless && securityType === 'tls' && vlessPort !== '443') {
-                alert('⛔ VLESS TLS port can be only 443 to be used as a proxy chain! 🫤');
-                return false;
+            if (isVless && securityType === 'tls' ) {
+                const match = chainProxy.match(/:(\\d+)\\?/);
+                const vlessPort = match ? match[1] : null;
+                if (vlessPort !== '443') {
+                     alert('⛔ VLESS TLS port can be only 443 to be used as a proxy chain! 🫤');
+                     return false;
+                 }
             }
-
             if (isCustomCdn && !(customCdnAddrs.length && customCdnHost && customCdnSni)) {
                 alert('⛔ All "Custom" fields should be filled or deleted together! 🫤');
                 return false;
             }
-
             try {
                 document.body.style.cursor = 'wait';
                 const applyButtonVal = applyButton.value;
                 applyButton.value = '⌛ Loading...';
-
                 const response = await fetch('/panel', {
                     method: 'POST',
                     body: formData,
                     credentials: 'include'
                 });
-
                 document.body.style.cursor = 'default';
                 applyButton.value = applyButtonVal;
-
                 if (!response.ok) {
                     const errorMessage = await response.text();
                     console.error(errorMessage, response.status);
@@ -837,16 +754,13 @@ export async function renderHomePage(proxySettings, isPassSet) {
                 console.error('Error:', error);
             }
         }
-
         const logout = async (event) => {
             event.preventDefault();
-
             try {
                 const response = await fetch('/logout', {
                     method: 'GET',
                     credentials: 'same-origin'
                 });
-
                 if (!response.ok) {
                     console.error('Failed to log out:', response.status);
                     return;
@@ -856,7 +770,6 @@ export async function renderHomePage(proxySettings, isPassSet) {
                 console.error('Error:', error);
             }
         }
-
         const resetPassword = async (event) => {
             event.preventDefault();
             const modal = document.getElementById('myModal');
@@ -865,21 +778,17 @@ export async function renderHomePage(proxySettings, isPassSet) {
             const passwordError = document.getElementById('passwordError');
             const newPassword = newPasswordInput.value;
             const confirmPassword = confirmPasswordInput.value;
-
             if (newPassword !== confirmPassword) {
                 passwordError.textContent = "Passwords do not match";
                 return false;
             }
-
             const hasCapitalLetter = /[A-Z]/.test(newPassword);
             const hasNumber = /[0-9]/.test(newPassword);
             const isLongEnough = newPassword.length >= 8;
-
             if (!(hasCapitalLetter && hasNumber && isLongEnough)) {
                 passwordError.textContent = '⚠️ Password must contain at least one capital letter, one number, and be at least 8 characters long.';
                 return false;
             }
-
             try {
                 const response = await fetch('/panel/password', {
                     method: 'POST',
@@ -889,7 +798,6 @@ export async function renderHomePage(proxySettings, isPassSet) {
                     body: newPassword,
                     credentials: 'same-origin'
                 });
-
                 if (response.ok) {
                     modal.style.display = "none";
                     document.body.style.overflow = "";
@@ -914,7 +822,6 @@ export async function renderHomePage(proxySettings, isPassSet) {
     </script>
     </body>
     </html>`;
-
     return new Response(homePage, {
         status: 200,
         headers: {
